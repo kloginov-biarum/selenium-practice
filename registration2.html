@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+            integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+            crossorigin="anonymous"></script>
+    <style>
+        .error-msg {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 4px;
+            display: none;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+<div class="container" style="padding-top: 90px;">
+
+    <h1>Registration</h1>
+    <p>Please submit some information about you below:</p>
+
+    <!-- Validation error popup -->
+    <div id="errorPopup" class="alert alert-danger alert-dismissible fade" role="alert" style="display:none;">
+        <strong>Validation Error:</strong> <span id="errorText"></span>
+        <button type="button" class="close" onclick="closePopup()">
+            <span>&times;</span>
+        </button>
+    </div>
+
+    <form id="regForm" action="registration_result.html" method="get" novalidate>
+        <div class="first_block">
+            <div class="form-group first_class">
+                <label>First name*</label>
+                <input type="text" id="firstName" class="form-control first" placeholder="Input your first name" maxlength="32">
+                <div class="error-msg" id="firstNameError"></div>
+            </div>
+            <div class="form-group second_class">
+                <label>Last name*</label>
+                <input type="text" id="lastName" class="form-control second" placeholder="Input your last name" maxlength="32">
+                <div class="error-msg" id="lastNameError"></div>
+            </div>
+            <div class="form-group third_class">
+                <label>Email*</label>
+                <input type="text" id="email" class="form-control third" placeholder="Input your email" maxlength="32">
+                <div class="error-msg" id="emailError"></div>
+            </div>
+        </div>
+        <div class="second_block">
+            <div class="form-group first_class">
+                <label>Phone:</label>
+                <!-- BUG: phone field has no digit-only validation — letters are accepted -->
+                <input type="text" id="phone" class="form-control first" placeholder="Input your phone:" maxlength="32">
+                <div class="error-msg" id="phoneError"></div>
+            </div>
+            <div class="form-group second_class">
+                <label>Address:</label>
+                <input type="text" id="address" class="form-control second" placeholder="Input your address:" maxlength="32">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+<script>
+    var latinOnly = /^[A-Za-z]+$/;
+    var gmailOnly = /^[a-zA-Z0-9._%+\-]+@gmail\.com$/;
+
+    function showPopup(message) {
+        var popup = document.getElementById('errorPopup');
+        document.getElementById('errorText').textContent = message;
+        popup.style.display = 'block';
+        popup.classList.add('show');
+    }
+
+    function closePopup() {
+        var popup = document.getElementById('errorPopup');
+        popup.style.display = 'none';
+        popup.classList.remove('show');
+    }
+
+    function validateName(value, fieldName) {
+        if (!value) return fieldName + ' is required.';
+        if (!latinOnly.test(value)) return fieldName + ' must contain Latin letters only.';
+        if (value.length < 2 || value.length > 20) return fieldName + ' must be between 2 and 20 characters.';
+        return null;
+    }
+
+    document.getElementById('regForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        closePopup();
+
+        var firstName = document.getElementById('firstName').value.trim();
+        var lastName  = document.getElementById('lastName').value.trim();
+        var email     = document.getElementById('email').value.trim();
+
+        var error = validateName(firstName, 'First name')
+                 || validateName(lastName,  'Last name')
+                 || (!email ? 'Email is required.' : (!gmailOnly.test(email) ? 'Email must be a valid @gmail.com address.' : null));
+
+        if (error) {
+            showPopup(error);
+            return;
+        }
+
+        this.submit();
+    });
+</script>
+
+</body>
+</html>

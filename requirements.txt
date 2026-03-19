@@ -1,0 +1,65 @@
+Registration Page — Requirements
+=================================
+
+
+OVERVIEW
+--------
+The registration page contains a form where users provide their personal
+information. Some fields are mandatory, others are optional. The form
+validates user input and either shows an error or redirects the user
+to a success page.
+
+
+FIELDS
+------
+
+First Name (required *)
+    The user must fill in this field. Only Latin letters are allowed —
+    no digits, spaces, or special characters. The name must be between
+    2 and 20 characters long. The label must have an asterisk (*) to
+    indicate it is required.
+
+Last Name (required *)
+    Same rules as First Name: Latin letters only, 2 to 20 characters,
+    marked with an asterisk.
+
+Email (required *)
+    The user must enter a valid Gmail address in the format
+    something@gmail.com. The label must have an asterisk.
+    Any other format is considered invalid.
+
+Phone (optional)
+    The user may leave this field empty. If they choose to fill it in,
+    only digits are allowed — no letters, dashes, spaces, or other
+    characters.
+
+Address (optional)
+    The user may leave this field empty. There are no format
+    restrictions if filled in.
+
+
+VALIDATION ERRORS
+-----------------
+If the user submits the form with invalid data, a popup message must
+appear describing the error. The form must not be submitted until all
+errors are fixed.
+
+    - First Name or Last Name contains non-Latin characters, or is
+      shorter than 2 or longer than 20 characters  ->  show error popup
+
+    - Email does not match the @gmail.com format  ->  show error popup
+
+    - Phone is filled in but contains non-digit characters  ->  show error popup
+
+
+SUCCESSFUL REGISTRATION
+-----------------------
+When all fields pass validation and the user submits the form, they are
+redirected to /registration_result.html. That page must display two
+messages:
+
+    "Congratulations! You have successfully registered!"
+
+    "Check your email to get a temporary password"
+
+Both messages must be visible immediately on the page without scrolling.

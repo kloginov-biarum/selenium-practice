@@ -1,59 +1,46 @@
 # Registration Page — Requirements
 
-## 1. Required Fields
+## Overview
 
-The following fields are **mandatory** and must be filled in before the form can be submitted:
-
-- **First name** *(marked with \*)*
-- **Last name** *(marked with \*)*
-- **Email** *(marked with \*)*
-
-All mandatory fields must be visually marked with an asterisk (`*`) next to the field label.
+The registration page contains a form where users provide their personal information. Some fields are mandatory, others are optional. The form validates user input and either shows an error or redirects the user to a success page.
 
 ---
 
-## 2. Field Validation Rules
+## Fields
 
-### 2.1 First Name
-- **Required:** Yes
-- **Allowed characters:** Latin letters only (A–Z, a–z). No digits, spaces, or special characters.
-- **Length:** Minimum 2 characters, maximum 20 characters.
-- **Error behavior:** If the field contains non-Latin characters or does not meet the length requirement, a validation error popup must be displayed.
+### First Name *(required)*
+The user must fill in this field. Only Latin letters are allowed — no digits, spaces, or special characters. The name must be between 2 and 20 characters long. The label must have an asterisk (`*`) to indicate it is required.
 
-### 2.2 Last Name
-- **Required:** Yes
-- **Allowed characters:** Latin letters only (A–Z, a–z). No digits, spaces, or special characters.
-- **Length:** Minimum 2 characters, maximum 20 characters.
-- **Error behavior:** If the field contains non-Latin characters or does not meet the length requirement, a validation error popup must be displayed.
+### Last Name *(required)*
+Same rules as First Name: Latin letters only, 2 to 20 characters, marked with an asterisk.
 
-### 2.3 Email
-- **Required:** Yes
-- **Valid format:** Must be a valid `@gmail.com` email address (e.g. `user@gmail.com`).
-- **Error behavior:** If the email does not match the required format, a validation error popup must be displayed.
+### Email *(required)*
+The user must enter a valid Gmail address in the format `something@gmail.com`. The label must have an asterisk. Any other format is considered invalid.
 
-### 2.4 Phone
-- **Required:** No (optional field).
-- **Allowed characters:** Digits only (0–9). No letters, spaces, dashes, or special characters.
-- **Error behavior:** If the user fills in the phone field and it contains any non-digit characters, a validation error popup must be displayed.
+### Phone *(optional)*
+The user may leave this field empty. If they choose to fill it in, only digits are allowed — no letters, dashes, spaces, or other characters.
 
-### 2.5 Address
-- **Required:** No (optional field).
-- **No format restrictions.**
+### Address *(optional)*
+The user may leave this field empty. There are no format restrictions if filled in.
 
 ---
 
-## 3. Form Submission
+## Validation Errors
 
-- The form must **not** be submitted if any required field is empty or any filled field fails validation.
-- Upon successful validation of all fields, the user must be redirected to `/registration_result.html`.
+If the user submits the form with invalid data, a popup message must appear describing the validation error. The form must not be submitted until all errors are fixed. Specifically:
+
+- First Name or Last Name contains non-Latin characters or is shorter than 2 / longer than 20 characters → show error popup
+- Email does not match `@gmail.com` format → show error popup
+- Phone is filled in but contains non-digit characters → show error popup
 
 ---
 
-## 4. Success Page (`/registration_result.html`)
+## Successful Registration
 
-After successful registration and redirect, the following texts must be displayed on the page:
+When all fields pass validation and the user submits the form, they are redirected to `/registration_result.html`. That page must display two messages:
 
-1. **"Congratulations! You have successfully registered!"**
-2. **"Check your email to get a temporary password"**
+> **Congratulations! You have successfully registered!**
 
-Both messages must be visible to the user without any additional actions (e.g. no scrolling required on a standard desktop screen).
+> **Check your email to get a temporary password**
+
+Both messages must be visible immediately on the page without any scrolling.

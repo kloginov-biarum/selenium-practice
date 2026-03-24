@@ -66,13 +66,13 @@
 
     function startAuction() {
         let cost = Math.floor(Math.random() * 5) * 10 + 110;
+        document.getElementById("price").innerHTML = "$" + cost.toString();
         let x = setInterval(function () {
             cost = cost - 5;
+            document.getElementById("price").innerHTML = "$" + cost.toString();
             if (cost < 95) {
                 document.getElementById("book").disabled = true;
-                document.getElementById("price").innerHTML = "$" + cost.toString();
-            } else {
-                document.getElementById("price").innerHTML = "$" + cost.toString();
+                clearInterval(x);
             }
         }, 1000);
         setTimeout(function () { clearInterval(x); }, 15000);

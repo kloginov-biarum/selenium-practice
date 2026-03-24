@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Large Frame</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style>body { background: #fff; padding: 20px; }</style>
+</head>
+<body>
+    <h4 id="frame-heading">This is a large frame</h4>
+    <p id="frame-text">Welcome to Frame 1. Switch to this frame to read this text or interact with the form below.</p>
+    <div class="form-group" style="max-width: 400px;">
+        <label for="frame-input">Enter something:</label>
+        <input type="text" id="frame-input" class="form-control" placeholder="Type here...">
+        <button id="frame-btn" class="btn btn-primary mt-2" onclick="document.getElementById('frame-result').style.display='block'">
+            Click me
+        </button>
+        <div id="frame-result" class="alert alert-success mt-2" style="display:none">
+            Button inside frame was clicked!
+        </div>
+    </div>
+</body>
+</html>

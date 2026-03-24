@@ -14,7 +14,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
             integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
             crossorigin="anonymous"></script>
-    <script src="jquery_min.js"></script>
 </head>
 
 <body onload="startAuction();" class="bg-light">
@@ -62,5 +61,75 @@
         </div>
     </form>
 
+<script>
+    var isFinished = false;
+
+    function startAuction() {
+        let cost = Math.floor(Math.random() * 5) * 10 + 110;
+        let x = setInterval(function () {
+            cost = cost - 5;
+            if (cost < 95) {
+                document.getElementById("book").disabled = true;
+                document.getElementById("price").innerHTML = "$" + cost.toString();
+            } else {
+                document.getElementById("price").innerHTML = "$" + cost.toString();
+            }
+        }, 1000);
+        setTimeout(function () { clearInterval(x); }, 15000);
+    }
+
+    function checkPrice() {
+        const price = document.getElementById("price").innerHTML;
+        if (price.toString() === "$100") {
+            document.getElementById("solve").disabled = false;
+            startTimer();
+        } else {
+            alert("You failed to rent your dream home :( Try again.");
+            window.location.reload();
+        }
+    }
+
+    function startTimer() {
+        let form = document.getElementsByTagName("form")[0];
+        form.style.display = "block";
+        input_value = Math.floor(Math.random() * 1000) + 1;
+        document.getElementById("input_value").innerHTML = input_value;
+        isFinished = false;
+        countDown(3);
+    }
+
+    function countDown(interval) {
+        var countDownTime = new Date();
+        countDownTime = new Date(countDownTime.getTime() + 1000 * interval);
+        var x = setInterval(function () {
+            var now = new Date().getTime();
+            var distance = countDownTime - now;
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = seconds + " seconds";
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = " time is up :(";
+                document.getElementById("timeLeft").innerHTML = "Oops, ";
+                isFinished = true;
+                document.getElementById("solve").disabled = true;
+            }
+        }, 100);
+    }
+
+    function checkAnswer(input_value, task_number) {
+        if (!isFinished) {
+            var result = parseFloat(document.getElementById("answer").value);
+            if (Math.abs(result - Math.log(Math.abs(12 * Math.sin(input_value)))) <= 1e-11) {
+                alert("Congrats! You've solved it!");
+            } else {
+                alert("Wrong answer!");
+            }
+        } else {
+            alert("Time is up!");
+        }
+    }
+
+    var input_value;
+</script>
 </body>
 </html>

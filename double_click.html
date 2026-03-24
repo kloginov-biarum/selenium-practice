@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Double Click Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="jquery_min.js"></script>
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
+    <style>
+        #result {
+            display: none;
+            margin-top: 30px;
+        }
+        #click-btn {
+            width: 220px;
+            height: 60px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<h3 class="timer">
+    <span class="nowrap" id="timeLeft">Time left:</span>
+    <span class="nowrap" id="countdown"></span>
+</h3>
+
+<div class="container" style="padding-top: 90px;">
+    <h2>Double Click Task</h2>
+    <p>Single click does nothing. Double click the button to reveal the result.</p>
+
+    <button id="click-btn"
+            class="btn btn-primary"
+            onclick="handleSingleClick()"
+            ondblclick="handleDoubleClick()">
+        Click me
+    </button>
+
+    <div id="result" class="alert alert-success">
+        <strong>Well done!</strong> You double-clicked the button.
+        <br><br>
+        <form action="" method="get" onsubmit="showResult(42); return false;">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var isFinished = false;
+    countDown(15);
+
+    function handleSingleClick() {
+        // single click does nothing
+    }
+
+    function handleDoubleClick() {
+        document.getElementById("result").style.display = "block";
+    }
+</script>
+</body>
+</html>

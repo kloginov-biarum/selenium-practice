@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wait for Visible Element</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container" style="padding-top: 60px;">
+    <h2>Wait for Visible Element</h2>
+    <p class="text-muted">
+        The element below is already in the DOM — but it is hidden.
+        Click the button and wait until it becomes visible.
+    </p>
+
+    <button id="showBtn" class="btn btn-primary" onclick="revealMessage()">
+        Show message
+    </button>
+
+    <!-- present in DOM, but hidden -->
+    <div id="message"
+         class="alert alert-success mt-4"
+         style="display: none;">
+        <strong>Now I am visible!</strong> You can read my text now.
+    </div>
+</div>
+
+<script>
+    function revealMessage() {
+        document.getElementById("showBtn").disabled = true;
+        setTimeout(function () {
+            document.getElementById("message").style.display = "block";
+        }, 5000);
+    }
+</script>
+</body>
+</html>

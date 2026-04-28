@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Locators Playground</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        .panel { background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
+        .badge-status { font-size: 0.75em; }
+        .icon { display: inline-block; width: 18px; text-align: center; }
+        .icon.ok  { color: #198754; }
+        .icon.err { color: #dc3545; }
+        .icon.warn{ color: #fd7e14; }
+        .breadcrumbs a { text-decoration: none; }
+        .breadcrumbs span:not(:last-child)::after { content: "›"; margin: 0 6px; color: #999; }
+        .tag { background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 4px; }
+        .review-stars { color: #ffc107; }
+        .price-old { text-decoration: line-through; color: #888; margin-right: 6px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>Admin Dashboard</h1>
+
+    <!-- breadcrumbs -->
+    <nav class="breadcrumbs mb-3">
+        <span><a href="#" data-nav="home">Home</a></span>
+        <span><a href="#" data-nav="catalog">Catalog</a></span>
+        <span><a href="#" data-nav="products">Products</a></span>
+        <span class="text-muted">Inventory</span>
+    </nav>
+
+    <!-- ============= USER PROFILE CARD ============= -->
+    <div class="panel" id="user-panel">
+        <div class="row">
+            <div class="col-md-2">
+                <img src="https://via.placeholder.com/80" alt="avatar" class="rounded-circle">
+            </div>
+            <div class="col-md-10">
+                <h4>Anna Volkova
+                    <span class="badge bg-success badge-status">online</span>
+                </h4>
+                <p class="text-muted mb-1">Senior QA Engineer · joined 2021</p>
+                <div>
+                    <span class="tag">selenium</span>
+                    <span class="tag">python</span>
+                    <span class="tag">api</span>
+                    <span class="tag">automation</span>
+                </div>
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-outline-primary" data-action="message" onclick="alert('Send message to Anna');">Message</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-action="follow" onclick="alert('Followed Anna');">Follow</button>
+                    <button class="btn btn-sm btn-outline-danger" data-action="block" onclick="alert('Blocked Anna');">Block</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============= FILTER FORM ============= -->
+    <div class="panel">
+        <h5>Filter inventory</h5>
+        <form id="filterForm" onsubmit="alert('Filter applied'); return false;">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <input type="search" name="q" class="form-control" placeholder="product name...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Min price</label>
+                    <input type="number" name="min_price" class="form-control" min="0" max="9999">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Max price</label>
+                    <input type="number" name="max_price" class="form-control" min="0" max="9999">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="books">Books</option>
+                        <option value="clothing" selected>Clothing</option>
+                        <option value="garden">Garden</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label d-block">Availability</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="in_stock" id="chkInStock" checked>
+                        <label class="form-check-label" for="chkInStock">In stock</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="on_sale" id="chkOnSale">
+                        <label class="form-check-label" for="chkOnSale">On sale</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="me-2">Sort by:</label>
+                <label><input type="radio" name="sort" value="price_asc" checked> Price ↑</label>
+                <label class="ms-2"><input type="radio" name="sort" value="price_desc"> Price ↓</label>
+                <label class="ms-2"><input type="radio" name="sort" value="rating"> Rating</label>
+                <label class="ms-2"><input type="radio" name="sort" value="newest" disabled> Newest (soon)</label>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="reset" class="btn btn-outline-secondary">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ============= PRODUCTS TABLE ============= -->
+    <div class="panel">
+        <h5>Products</h5>
+        <table class="table table-hover" id="products-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-row-id="prd_a8f3k9" class="product-row">
+                    <td><input type="checkbox" name="select" value="prd_a8f3k9"></td>
+                    <td>SKU-1001</td>
+                    <td><a href="#" class="product-link">Mechanical Keyboard</a></td>
+                    <td><span class="tag">electronics</span></td>
+                    <td><span class="price-old">$140</span><b>$120</b></td>
+                    <td>34</td>
+                    <td><span class="review-stars">★★★★☆</span></td>
+                    <td><span class="badge bg-success">active</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Mechanical Keyboard');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Mechanical Keyboard');">Delete</button>
+                    </td>
+                </tr>
+                <tr data-row-id="prd_x2m7q1" class="product-row">
+                    <td><input type="checkbox" name="select" value="prd_x2m7q1"></td>
+                    <td>SKU-1002</td>
+                    <td><a href="#" class="product-link">Wireless Mouse</a></td>
+                    <td><span class="tag">electronics</span></td>
+                    <td><b>$45</b></td>
+                    <td>0</td>
+                    <td><span class="review-stars">★★★★★</span></td>
+                    <td><span class="badge bg-warning text-dark">out of stock</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Wireless Mouse');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Wireless Mouse');">Delete</button>
+                    </td>
+                </tr>
+                <tr data-row-id="prd_p9z4d2" class="product-row">
+                    <td><input type="checkbox" name="select" value="prd_p9z4d2"></td>
+                    <td>SKU-1003</td>
+                    <td><a href="#" class="product-link">USB-C Cable 2m</a></td>
+                    <td><span class="tag">electronics</span></td>
+                    <td><b>$15</b></td>
+                    <td>120</td>
+                    <td><span class="review-stars">★★★☆☆</span></td>
+                    <td><span class="badge bg-success">active</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit USB-C Cable');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete USB-C Cable');">Delete</button>
+                    </td>
+                </tr>
+                <tr data-row-id="prd_l5w8b6" class="product-row">
+                    <td><input type="checkbox" name="select" value="prd_l5w8b6"></td>
+                    <td>SKU-1004</td>
+                    <td><a href="#" class="product-link">Cotton T-Shirt</a></td>
+                    <td><span class="tag">clothing</span></td>
+                    <td><span class="price-old">$30</span><b>$22</b></td>
+                    <td>56</td>
+                    <td><span class="review-stars">★★★★☆</span></td>
+                    <td><span class="badge bg-success">active</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Cotton T-Shirt');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Cotton T-Shirt');">Delete</button>
+                    </td>
+                </tr>
+                <tr data-row-id="prd_z7t1c3" class="product-row">
+                    <td><input type="checkbox" name="select" value="prd_z7t1c3"></td>
+                    <td>SKU-1005</td>
+                    <td><a href="#" class="product-link">Garden Hose 25m</a></td>
+                    <td><span class="tag">garden</span></td>
+                    <td><b>$38</b></td>
+                    <td>9</td>
+                    <td><span class="review-stars">★★☆☆☆</span></td>
+                    <td><span class="badge bg-secondary">archived</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" disabled>Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" disabled>Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============= NESTED COMMENTS ============= -->
+    <div class="panel">
+        <h5>Latest reviews</h5>
+        <ul class="list-unstyled" id="reviews">
+            <li id="rev_001" class="border-bottom py-2">
+                <b>John D.</b> <span class="text-muted">2 days ago</span>
+                <p>Solid keyboard, the typing feel is great.</p>
+                <a href="#" class="reply-link">reply</a>
+                <ul class="list-unstyled ms-4 mt-2">
+                    <li id="rev_001_1" class="border-start ps-3">
+                        <b>Admin</b>
+                        <p>Thanks for the feedback!</p>
+                    </li>
+                    <li id="rev_001_2" class="border-start ps-3">
+                        <b>Maria K.</b>
+                        <p>I agree, switches are crisp.</p>
+                    </li>
+                </ul>
+            </li>
+            <li id="rev_002" class="border-bottom py-2">
+                <b>Tom S.</b> <span class="text-muted">5 days ago</span>
+                <p>Mouse stopped working after a week.
+                    <span class="icon err">✘</span>
+                </p>
+                <a href="#" class="reply-link">reply</a>
+            </li>
+            <li id="rev_003" class="border-bottom py-2">
+                <b>Lara P.</b> <span class="text-muted">1 week ago</span>
+                <p>The cable is a bit short but works fine.
+                    <span class="icon ok">✔</span>
+                </p>
+                <a href="#" class="reply-link">reply</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ============= NOTIFICATIONS ============= -->
+    <div class="panel">
+        <h5>Notifications</h5>
+        <ul id="notifications">
+            <li><span class="icon ok">✔</span> Order #4521 was shipped</li>
+            <li><span class="icon warn">!</span> Stock low on SKU-1002</li>
+            <li><span class="icon err">✘</span> Payment for invoice #INV-998 failed</li>
+            <li><span class="icon ok">✔</span> Backup completed</li>
+            <li><span class="icon warn">!</span> Certificate expires in 14 days</li>
+        </ul>
+    </div>
+
+    <!-- ============= TABS ============= -->
+    <div class="panel">
+        <ul class="nav nav-tabs" id="settingsTabs">
+            <li class="nav-item"><a class="nav-link active" href="#general">General</a></li>
+            <li class="nav-item"><a class="nav-link" href="#security">Security</a></li>
+            <li class="nav-item"><a class="nav-link" href="#billing">Billing</a></li>
+            <li class="nav-item"><a class="nav-link disabled" href="#api">API (coming soon)</a></li>
+        </ul>
+        <div class="tab-content p-3 border border-top-0">
+            <div id="general">
+                <p>Display name, language and timezone.</p>
+                <input type="text" class="form-control mb-2" placeholder="Display name">
+                <select class="form-select mb-2">
+                    <option>English</option>
+                    <option>Русский</option>
+                    <option>Español</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============= MODAL TRIGGER ============= -->
+    <div class="panel">
+        <button class="btn btn-warning" id="openConfirm" onclick="document.getElementById('confirmBox').style.display='block';">
+            Confirm dangerous action
+        </button>
+        <div id="confirmBox" class="alert alert-warning mt-3" style="display:none;" role="dialog">
+            <p>Are you absolutely sure?</p>
+            <button class="btn btn-sm btn-danger"  onclick="alert('Confirmed'); document.getElementById('confirmBox').style.display='none';">Yes, delete everything</button>
+            <button class="btn btn-sm btn-secondary" onclick="document.getElementById('confirmBox').style.display='none';">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

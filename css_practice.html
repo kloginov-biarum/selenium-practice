@@ -9,9 +9,30 @@
         .task-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
         .task-title { font-weight: bold; color: #6f42c1; }
         .hint { color: #6c757d; font-size: 0.9em; margin-top: 5px; }
+        .custom-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 14px 20px; border-radius: 6px; z-index: 9999; min-width: 300px;
+        }
+        .custom-popup-message { margin-right: 30px; }
+        .custom-popup-close   { float: right; cursor: pointer; background: none; border: none; font-size: 1.3em; line-height: 1; }
     </style>
+    <script>
+        function showPopup(msg) {
+            document.getElementById('popup-message').textContent = msg;
+            document.getElementById('custom-popup').style.display = 'block';
+        }
+        function closePopup() {
+            document.getElementById('custom-popup').style.display = 'none';
+        }
+    </script>
 </head>
 <body class="bg-light">
+
+<div id="custom-popup" class="custom-popup" style="display:none;" role="dialog">
+    <button class="custom-popup-close" onclick="closePopup()">&times;</button>
+    <span id="popup-message" class="custom-popup-message"></span>
+</div>
 
 <div class="container">
     <h1>CSS Selectors Practice</h1>
@@ -22,7 +43,7 @@
         <div class="task-title">1. Attribute selectors</div>
         <p>Locate inputs by their attributes:</p>
 
-        <form id="signup" onsubmit="alert('Form submitted'); return false;">
+        <form id="signup" onsubmit="showPopup('Form submitted'); return false;">
             <input type="text"     name="username" placeholder="username">
             <input type="email"    name="email"    placeholder="email">
             <input type="password" name="password" placeholder="password">
@@ -85,7 +106,7 @@
             <label><input type="checkbox" name="opt3" checked> Option 3</label>
         </div>
         <button class="btn btn-primary mt-2" disabled>Save (disabled)</button>
-        <button class="btn btn-primary mt-2" onclick="alert('Cancel clicked');">Cancel</button>
+        <button class="btn btn-primary mt-2" onclick="showPopup('Cancel clicked');">Cancel</button>
 
         <div class="hint">
             <code>tr:nth-child(3)</code> — third row<br>

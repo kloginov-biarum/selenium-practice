@@ -17,9 +17,30 @@
         .tag { background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 4px; }
         .review-stars { color: #ffc107; }
         .price-old { text-decoration: line-through; color: #888; margin-right: 6px; }
+        .custom-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 14px 20px; border-radius: 6px; z-index: 9999; min-width: 300px;
+        }
+        .custom-popup-message { margin-right: 30px; }
+        .custom-popup-close   { float: right; cursor: pointer; background: none; border: none; font-size: 1.3em; line-height: 1; }
     </style>
+    <script>
+        function showPopup(msg) {
+            document.getElementById('popup-message').textContent = msg;
+            document.getElementById('custom-popup').style.display = 'block';
+        }
+        function closePopup() {
+            document.getElementById('custom-popup').style.display = 'none';
+        }
+    </script>
 </head>
 <body class="bg-light">
+
+<div id="custom-popup" class="custom-popup" style="display:none;" role="dialog">
+    <button class="custom-popup-close" onclick="closePopup()">&times;</button>
+    <span id="popup-message" class="custom-popup-message"></span>
+</div>
 
 <div class="container">
     <h1>Admin Dashboard</h1>
@@ -50,9 +71,9 @@
                     <span class="tag">automation</span>
                 </div>
                 <div class="mt-2">
-                    <button class="btn btn-sm btn-outline-primary" data-action="message" onclick="alert('Send message to Anna');">Message</button>
-                    <button class="btn btn-sm btn-outline-secondary" data-action="follow" onclick="alert('Followed Anna');">Follow</button>
-                    <button class="btn btn-sm btn-outline-danger" data-action="block" onclick="alert('Blocked Anna');">Block</button>
+                    <button class="btn btn-sm btn-outline-primary" data-action="message" onclick="showPopup('Send message to Anna');">Message</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-action="follow" onclick="showPopup('Followed Anna');">Follow</button>
+                    <button class="btn btn-sm btn-outline-danger" data-action="block" onclick="showPopup('Blocked Anna');">Block</button>
                 </div>
             </div>
         </div>
@@ -61,7 +82,7 @@
     <!-- ============= FILTER FORM ============= -->
     <div class="panel">
         <h5>Filter inventory</h5>
-        <form id="filterForm" onsubmit="alert('Filter applied'); return false;">
+        <form id="filterForm" onsubmit="showPopup('Filter applied'); return false;">
             <div class="row g-2">
                 <div class="col-md-3">
                     <label class="form-label">Search</label>
@@ -141,8 +162,8 @@
                     <td><span class="review-stars">★★★★☆</span></td>
                     <td><span class="badge bg-success">active</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Mechanical Keyboard');">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Mechanical Keyboard');">Delete</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="showPopup('Edit Mechanical Keyboard');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="showPopup('Delete Mechanical Keyboard');">Delete</button>
                     </td>
                 </tr>
                 <tr data-row-id="prd_x2m7q1" class="product-row">
@@ -155,8 +176,8 @@
                     <td><span class="review-stars">★★★★★</span></td>
                     <td><span class="badge bg-warning text-dark">out of stock</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Wireless Mouse');">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Wireless Mouse');">Delete</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="showPopup('Edit Wireless Mouse');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="showPopup('Delete Wireless Mouse');">Delete</button>
                     </td>
                 </tr>
                 <tr data-row-id="prd_p9z4d2" class="product-row">
@@ -169,8 +190,8 @@
                     <td><span class="review-stars">★★★☆☆</span></td>
                     <td><span class="badge bg-success">active</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit USB-C Cable');">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete USB-C Cable');">Delete</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="showPopup('Edit USB-C Cable');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="showPopup('Delete USB-C Cable');">Delete</button>
                     </td>
                 </tr>
                 <tr data-row-id="prd_l5w8b6" class="product-row">
@@ -183,8 +204,8 @@
                     <td><span class="review-stars">★★★★☆</span></td>
                     <td><span class="badge bg-success">active</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="alert('Edit Cotton T-Shirt');">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger"  onclick="alert('Delete Cotton T-Shirt');">Delete</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="showPopup('Edit Cotton T-Shirt');">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"  onclick="showPopup('Delete Cotton T-Shirt');">Delete</button>
                     </td>
                 </tr>
                 <tr data-row-id="prd_z7t1c3" class="product-row">
@@ -281,7 +302,7 @@
         </button>
         <div id="confirmBox" class="alert alert-warning mt-3" style="display:none;" role="dialog">
             <p>Are you absolutely sure?</p>
-            <button class="btn btn-sm btn-danger"  onclick="alert('Confirmed'); document.getElementById('confirmBox').style.display='none';">Yes, delete everything</button>
+            <button class="btn btn-sm btn-danger"  onclick="showPopup('Confirmed'); document.getElementById('confirmBox').style.display='none';">Yes, delete everything</button>
             <button class="btn btn-sm btn-secondary" onclick="document.getElementById('confirmBox').style.display='none';">Cancel</button>
         </div>
     </div>

@@ -10,9 +10,30 @@
         .task-title { font-weight: bold; color: #0d6efd; }
         .hint { color: #6c757d; font-size: 0.9em; margin-top: 5px; }
         table td .buy-btn { float: right; }
+        .custom-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 14px 20px; border-radius: 6px; z-index: 9999; min-width: 300px;
+        }
+        .custom-popup-message { margin-right: 30px; }
+        .custom-popup-close   { float: right; cursor: pointer; background: none; border: none; font-size: 1.3em; line-height: 1; }
     </style>
+    <script>
+        function showPopup(msg) {
+            document.getElementById('popup-message').textContent = msg;
+            document.getElementById('custom-popup').style.display = 'block';
+        }
+        function closePopup() {
+            document.getElementById('custom-popup').style.display = 'none';
+        }
+    </script>
 </head>
 <body class="bg-light">
+
+<div id="custom-popup" class="custom-popup" style="display:none;" role="dialog">
+    <button class="custom-popup-close" onclick="closePopup()">&times;</button>
+    <span id="popup-message" class="custom-popup-message"></span>
+</div>
 
 <div class="container">
     <h1>XPath Practice</h1>
@@ -32,19 +53,19 @@
                     <td>1</td>
                     <td class="product-name">Mechanical Keyboard</td>
                     <td>$120</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="kbd-001" onclick="alert('Bought: Mechanical Keyboard');">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="kbd-001" onclick="showPopup('Bought: Mechanical Keyboard');">Buy</button></td>
                 </tr>
                 <tr>
                     <td>2</td>
                     <td class="product-name">Wireless Mouse</td>
                     <td>$45</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="ms-002" onclick="alert('Bought: Wireless Mouse');">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="ms-002" onclick="showPopup('Bought: Wireless Mouse');">Buy</button></td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td class="product-name">USB-C Cable</td>
                     <td>$15</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="cbl-003" onclick="alert('Bought: USB-C Cable');">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="cbl-003" onclick="showPopup('Bought: USB-C Cable');">Buy</button></td>
                 </tr>
             </tbody>
         </table>
@@ -116,7 +137,7 @@
             <li><b>Absolute:</b> <code>/html/body/div/div[5]/div/button</code> — fragile, breaks if structure changes.</li>
             <li><b>Relative:</b> <code>//button[@id='target-btn']</code> — robust.</li>
         </ol>
-        <button id="target-btn" class="btn btn-success" onclick="alert('You found me!');">Click me</button>
+        <button id="target-btn" class="btn btn-success" onclick="showPopup('You found me!');">Click me</button>
     </div>
 </div>
 

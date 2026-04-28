@@ -22,7 +22,7 @@
         <div class="task-title">1. Attribute selectors</div>
         <p>Locate inputs by their attributes:</p>
 
-        <form id="signup">
+        <form id="signup" onsubmit="alert('Form submitted'); return false;">
             <input type="text"     name="username" placeholder="username">
             <input type="email"    name="email"    placeholder="email">
             <input type="password" name="password" placeholder="password">
@@ -85,7 +85,7 @@
             <label><input type="checkbox" name="opt3" checked> Option 3</label>
         </div>
         <button class="btn btn-primary mt-2" disabled>Save (disabled)</button>
-        <button class="btn btn-primary mt-2">Cancel</button>
+        <button class="btn btn-primary mt-2" onclick="alert('Cancel clicked');">Cancel</button>
 
         <div class="hint">
             <code>tr:nth-child(3)</code> — third row<br>

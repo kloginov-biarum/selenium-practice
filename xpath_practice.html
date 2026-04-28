@@ -32,19 +32,19 @@
                     <td>1</td>
                     <td class="product-name">Mechanical Keyboard</td>
                     <td>$120</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="kbd-001">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="kbd-001" onclick="alert('Bought: Mechanical Keyboard');">Buy</button></td>
                 </tr>
                 <tr>
                     <td>2</td>
                     <td class="product-name">Wireless Mouse</td>
                     <td>$45</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="ms-002">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="ms-002" onclick="alert('Bought: Wireless Mouse');">Buy</button></td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td class="product-name">USB-C Cable</td>
                     <td>$15</td>
-                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="cbl-003">Buy</button></td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="cbl-003" onclick="alert('Bought: USB-C Cable');">Buy</button></td>
                 </tr>
             </tbody>
         </table>
@@ -116,7 +116,7 @@
             <li><b>Absolute:</b> <code>/html/body/div/div[5]/div/button</code> — fragile, breaks if structure changes.</li>
             <li><b>Relative:</b> <code>//button[@id='target-btn']</code> — robust.</li>
         </ol>
-        <button id="target-btn" class="btn btn-success">Click me</button>
+        <button id="target-btn" class="btn btn-success" onclick="alert('You found me!');">Click me</button>
     </div>
 </div>
 

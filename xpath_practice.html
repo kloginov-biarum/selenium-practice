@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XPath Practice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        .task-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
+        .task-title { font-weight: bold; color: #0d6efd; }
+        .hint { color: #6c757d; font-size: 0.9em; margin-top: 5px; }
+        table td .buy-btn { float: right; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>XPath Practice</h1>
+    <p class="lead">Write reliable XPath locators for the elements below.</p>
+
+    <!-- ============= AXES: parent / child / following-sibling ============= -->
+    <div class="task-card">
+        <div class="task-title">1. Axes — parent / child / following-sibling</div>
+        <p>Find the <b>Buy</b> button next to the product named <b>“Wireless Mouse”</b>.</p>
+
+        <table class="table table-bordered" id="products">
+            <thead>
+                <tr><th>#</th><th>Product</th><th>Price</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="product-name">Mechanical Keyboard</td>
+                    <td>$120</td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="kbd-001">Buy</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="product-name">Wireless Mouse</td>
+                    <td>$45</td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="ms-002">Buy</button></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="product-name">USB-C Cable</td>
+                    <td>$15</td>
+                    <td><button class="btn btn-sm btn-primary buy-btn" data-sku="cbl-003">Buy</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="hint">
+            <b>Hint:</b> use <code>following-sibling</code> to jump from the product cell to the action cell.<br>
+            Example: <code>//td[text()='Wireless Mouse']/following-sibling::td/button</code>
+        </div>
+    </div>
+
+    <!-- ============= contains() and starts-with() ============= -->
+    <div class="task-card">
+        <div class="task-title">2. Predicates — contains() / starts-with()</div>
+        <p>Each card has a <b>dynamic id</b> that starts with <code>card_</code> followed by random characters.
+           Find the card whose title contains the word <b>“Premium”</b>.</p>
+
+        <div id="card_a8f3k9" class="border p-3 mb-2">
+            <h5 class="card-title">Standard Plan</h5>
+            <p>Basic features for everyone.</p>
+        </div>
+        <div id="card_x2m7q1" class="border p-3 mb-2">
+            <h5 class="card-title">Premium Plan</h5>
+            <p>Advanced features for power users.</p>
+        </div>
+        <div id="card_p9z4d2" class="border p-3 mb-2">
+            <h5 class="card-title">Enterprise Plan</h5>
+            <p>Custom solutions.</p>
+        </div>
+
+        <div class="hint">
+            <b>Hint:</b> <code>//div[starts-with(@id,'card_') and .//h5[contains(text(),'Premium')]]</code>
+        </div>
+    </div>
+
+    <!-- ============= text() exact match ============= -->
+    <div class="task-card">
+        <div class="task-title">3. text() — exact text matching</div>
+        <p>Find the link with the <b>exact</b> text “Read more” (not “Read more about us” or “Read”).</p>
+
+        <ul>
+            <li><a href="#a">Read</a></li>
+            <li><a href="#b">Read more</a></li>
+            <li><a href="#c">Read more about us</a></li>
+            <li><a href="#d">Read carefully</a></li>
+        </ul>
+
+        <div class="hint"><b>Hint:</b> <code>//a[text()='Read more']</code></div>
+    </div>
+
+    <!-- ============= parent axis ============= -->
+    <div class="task-card">
+        <div class="task-title">4. parent — go up the tree</div>
+        <p>The error icon below has no useful attributes. Find its parent <code>&lt;li&gt;</code> to read the message.</p>
+
+        <ul id="messages">
+            <li>Saved successfully <span class="icon ok">✔</span></li>
+            <li>Network error <span class="icon err">✘</span></li>
+            <li>Loading... <span class="icon wait">⏳</span></li>
+        </ul>
+
+        <div class="hint"><b>Hint:</b> <code>//span[@class='icon err']/parent::li</code></div>
+    </div>
+
+    <!-- ============= absolute vs relative ============= -->
+    <div class="task-card">
+        <div class="task-title">5. Absolute vs relative — why relative wins</div>
+        <p>Locate the highlighted button. Try both:</p>
+        <ol>
+            <li><b>Absolute:</b> <code>/html/body/div/div[5]/div/button</code> — fragile, breaks if structure changes.</li>
+            <li><b>Relative:</b> <code>//button[@id='target-btn']</code> — robust.</li>
+        </ol>
+        <button id="target-btn" class="btn btn-success">Click me</button>
+    </div>
+</div>
+
+</body>
+</html>

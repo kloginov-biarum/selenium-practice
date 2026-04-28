@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Selectors Practice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        .task-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
+        .task-title { font-weight: bold; color: #6f42c1; }
+        .hint { color: #6c757d; font-size: 0.9em; margin-top: 5px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>CSS Selectors Practice</h1>
+    <p class="lead">Write reliable CSS locators for the elements below.</p>
+
+    <!-- ============= attribute selectors ============= -->
+    <div class="task-card">
+        <div class="task-title">1. Attribute selectors</div>
+        <p>Locate inputs by their attributes:</p>
+
+        <form id="signup">
+            <input type="text"     name="username" placeholder="username">
+            <input type="email"    name="email"    placeholder="email">
+            <input type="password" name="password" placeholder="password">
+            <input type="text"     name="promo"    placeholder="promo code" disabled>
+            <input type="submit"   value="Register">
+        </form>
+
+        <div class="hint">
+            <code>input[type="email"]</code> — by exact attribute<br>
+            <code>input[name^="user"]</code> — name starts with "user"<br>
+            <code>input[name$="word"]</code> — name ends with "word"<br>
+            <code>input[name*="ail"]</code> — name contains "ail"<br>
+            <code>input[disabled]</code> — has disabled attribute
+        </div>
+    </div>
+
+    <!-- ============= combinators ============= -->
+    <div class="task-card">
+        <div class="task-title">2. Combinators — descendant / child / sibling</div>
+
+        <div class="menu">
+            <ul class="primary">
+                <li>Home</li>
+                <li class="active">Products
+                    <ul class="submenu">
+                        <li>Laptops</li>
+                        <li>Phones</li>
+                        <li>Tablets</li>
+                    </ul>
+                </li>
+                <li>About</li>
+            </ul>
+        </div>
+
+        <div class="hint">
+            <code>.menu li</code> — descendant (any nesting)<br>
+            <code>.menu &gt; ul &gt; li</code> — direct child only<br>
+            <code>.active + li</code> — adjacent sibling (next one)<br>
+            <code>.active ~ li</code> — general sibling (any after)
+        </div>
+    </div>
+
+    <!-- ============= pseudo-classes ============= -->
+    <div class="task-card">
+        <div class="task-title">3. Pseudo-classes — :nth-child, :checked, :disabled</div>
+
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr><td>row 1</td></tr>
+                <tr><td>row 2</td></tr>
+                <tr><td>row 3</td></tr>
+                <tr><td>row 4</td></tr>
+                <tr><td>row 5</td></tr>
+            </tbody>
+        </table>
+
+        <div>
+            <label><input type="checkbox" name="opt1" checked> Option 1</label><br>
+            <label><input type="checkbox" name="opt2"> Option 2</label><br>
+            <label><input type="checkbox" name="opt3" checked> Option 3</label>
+        </div>
+        <button class="btn btn-primary mt-2" disabled>Save (disabled)</button>
+        <button class="btn btn-primary mt-2">Cancel</button>
+
+        <div class="hint">
+            <code>tr:nth-child(3)</code> — third row<br>
+            <code>tr:first-child</code> / <code>tr:last-child</code><br>
+            <code>tr:nth-child(odd)</code> / <code>tr:nth-child(2n)</code><br>
+            <code>input:checked</code> — only checked checkboxes<br>
+            <code>button:disabled</code> / <code>button:enabled</code>
+        </div>
+    </div>
+
+    <!-- ============= when CSS, when XPath ============= -->
+    <div class="task-card">
+        <div class="task-title">4. When CSS vs XPath</div>
+        <table class="table">
+            <thead><tr><th>Use case</th><th>Best tool</th></tr></thead>
+            <tbody>
+                <tr><td>By id, class, attribute</td><td><b>CSS</b> (faster, shorter)</td></tr>
+                <tr><td>nth-child / first / last</td><td><b>CSS</b></td></tr>
+                <tr><td>Adjacent / general sibling</td><td><b>CSS</b></td></tr>
+                <tr><td>Match by visible text</td><td><b>XPath</b> (<code>text()</code>, <code>contains()</code>)</td></tr>
+                <tr><td>Walk up the tree (parent / ancestor)</td><td><b>XPath</b></td></tr>
+                <tr><td>Match exact text content</td><td><b>XPath</b></td></tr>
+                <tr><td>Combine multiple conditions on one node</td><td>Both work, XPath more flexible</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============= reliability rules ============= -->
+    <div class="task-card">
+        <div class="task-title">5. Reliable locator rules</div>
+        <ol>
+            <li>Prefer <b>id</b> if present and stable</li>
+            <li>Use <b>data-*</b> attributes when available — they don't change for visual reasons</li>
+            <li>Avoid absolute paths (<code>/html/body/div/...</code>)</li>
+            <li>Avoid auto-generated classes (<code>css-1a2b3c</code>)</li>
+            <li>Avoid coupling to text in i18n apps (text changes per language)</li>
+            <li>Prefer <code>contains()</code> / <code>starts-with()</code> over exact match for dynamic ids</li>
+            <li>Test your locator in DevTools first: <code>$x("//...")</code> or <code>$$("css")</code></li>
+        </ol>
+    </div>
+</div>
+
+</body>
+</html>

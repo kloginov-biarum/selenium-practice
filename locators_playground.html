@@ -277,13 +277,13 @@
     <!-- ============= TABS ============= -->
     <div class="panel">
         <ul class="nav nav-tabs" id="settingsTabs">
-            <li class="nav-item"><a class="nav-link active" href="#general">General</a></li>
-            <li class="nav-item"><a class="nav-link" href="#security">Security</a></li>
-            <li class="nav-item"><a class="nav-link" href="#billing">Billing</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#general"  onclick="switchTab(event, 'general');">General</a></li>
+            <li class="nav-item"><a class="nav-link"        href="#security" onclick="switchTab(event, 'security');">Security</a></li>
+            <li class="nav-item"><a class="nav-link"        href="#billing"  onclick="switchTab(event, 'billing');">Billing</a></li>
             <li class="nav-item"><a class="nav-link disabled" href="#api">API (coming soon)</a></li>
         </ul>
         <div class="tab-content p-3 border border-top-0">
-            <div id="general">
+            <div id="general" class="tab-pane">
                 <p>Display name, language and timezone.</p>
                 <input type="text" class="form-control mb-2" placeholder="Display name">
                 <select class="form-select mb-2">
@@ -292,8 +292,42 @@
                     <option>Español</option>
                 </select>
             </div>
+            <div id="security" class="tab-pane" style="display:none;">
+                <p>Manage your account security.</p>
+                <label class="form-label">Current password</label>
+                <input type="password" class="form-control mb-2" placeholder="••••••••">
+                <label class="form-label">New password</label>
+                <input type="password" class="form-control mb-2" placeholder="••••••••">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enable2fa">
+                    <label class="form-check-label" for="enable2fa">Enable two-factor authentication</label>
+                </div>
+                <button class="btn btn-primary mt-2" onclick="showPopup('Security settings updated');">Save</button>
+            </div>
+            <div id="billing" class="tab-pane" style="display:none;">
+                <p>Current plan: <b>Pro</b> ($29/month)</p>
+                <table class="table table-sm">
+                    <thead><tr><th>Date</th><th>Invoice</th><th>Amount</th></tr></thead>
+                    <tbody>
+                        <tr><td>2026-04-01</td><td>INV-1042</td><td>$29.00</td></tr>
+                        <tr><td>2026-03-01</td><td>INV-0987</td><td>$29.00</td></tr>
+                        <tr><td>2026-02-01</td><td>INV-0921</td><td>$29.00</td></tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-outline-primary" onclick="showPopup('Upgrade to Enterprise');">Upgrade plan</button>
+            </div>
         </div>
     </div>
+
+    <script>
+        function switchTab(e, id) {
+            e.preventDefault();
+            document.querySelectorAll('#settingsTabs .nav-link').forEach(function (a) { a.classList.remove('active'); });
+            e.currentTarget.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(function (p) { p.style.display = 'none'; });
+            document.getElementById(id).style.display = 'block';
+        }
+    </script>
 
     <!-- ============= MODAL TRIGGER ============= -->
     <div class="panel">

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyboard Shortcuts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        .task-card { background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
+        .task-title { font-weight: bold; color: #6610f2; margin-bottom: 10px; }
+        .status { font-size: 0.95em; margin-top: 8px; }
+        .ok  { color: #198754; }
+        .bad { color: #dc3545; }
+        kbd { background: #212529; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>Keyboard Shortcuts</h1>
+    <p>Practice <code>key_down</code>, <code>key_up</code>, and <code>send_keys(Keys.X)</code> using ActionChains.</p>
+
+    <!-- Task 1: Select all + delete -->
+    <div class="task-card">
+        <div class="task-title">1. Select all and delete</div>
+        <p>The input below has pre-filled text.
+           Use <kbd>Ctrl</kbd>+<kbd>A</kbd> to select it, then press <kbd>Delete</kbd> (or <kbd>Backspace</kbd>) to clear it.</p>
+        <input type="text" id="select-all-input" class="form-control" value="please clear me with Ctrl+A and Delete" style="max-width: 500px;">
+        <div class="status" id="status1">Status: <span class="bad">not cleared</span></div>
+    </div>
+
+    <!-- Task 2: Type uppercase using Shift -->
+    <div class="task-card">
+        <div class="task-title">2. Hold Shift while typing</div>
+        <p>Type the word <b>HELLO</b> in the input below by holding <kbd>Shift</kbd>
+           and pressing <kbd>h</kbd>, <kbd>e</kbd>, <kbd>l</kbd>, <kbd>l</kbd>, <kbd>o</kbd>.</p>
+        <input type="text" id="shift-input" class="form-control" placeholder="type HELLO using Shift" style="max-width: 500px;">
+        <div class="status" id="status2">Status: <span class="bad">waiting for HELLO</span></div>
+    </div>
+
+    <!-- Task 3: Capture last shortcut -->
+    <div class="task-card">
+        <div class="task-title">3. Press a specific shortcut</div>
+        <p>While focus is on the area below, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>.</p>
+        <div id="shortcut-area"
+             tabindex="0"
+             class="border rounded p-4 bg-white"
+             style="max-width: 500px; outline: none;">
+            Click here to focus, then press the shortcut.
+        </div>
+        <div class="status" id="status3">Last shortcut: <span id="last-shortcut">none</span></div>
+    </div>
+
+    <!-- Task 4: Tab navigation -->
+    <div class="task-card">
+        <div class="task-title">4. Tab navigation</div>
+        <p>Click the first input, then press <kbd>Tab</kbd> three times to focus the <b>“target”</b> input.</p>
+        <input type="text" class="form-control mb-2" placeholder="field 1" style="max-width: 300px;">
+        <input type="text" class="form-control mb-2" placeholder="field 2" style="max-width: 300px;">
+        <input type="text" class="form-control mb-2" placeholder="field 3" style="max-width: 300px;">
+        <input type="text" id="tab-target" class="form-control mb-2" placeholder="target — Tab here" style="max-width: 300px;">
+        <div class="status" id="status4">Status: <span class="bad">target not focused</span></div>
+    </div>
+</div>
+
+<script>
+    // Task 1: empty input via Ctrl+A + Delete
+    var task1Input = document.getElementById('select-all-input');
+    task1Input.addEventListener('input', function () {
+        var s = document.getElementById('status1');
+        s.innerHTML = 'Status: ' + (task1Input.value === ''
+            ? '<span class="ok">cleared</span>'
+            : '<span class="bad">not cleared</span>');
+    });
+
+    // Task 2: type HELLO
+    var task2Input = document.getElementById('shift-input');
+    task2Input.addEventListener('input', function () {
+        var s = document.getElementById('status2');
+        s.innerHTML = 'Status: ' + (task2Input.value === 'HELLO'
+            ? '<span class="ok">HELLO entered</span>'
+            : '<span class="bad">waiting for HELLO</span>');
+    });
+
+    // Task 3: shortcut Ctrl+Shift+K
+    var area = document.getElementById('shortcut-area');
+    area.addEventListener('keydown', function (e) {
+        var parts = [];
+        if (e.ctrlKey)  parts.push('Ctrl');
+        if (e.shiftKey) parts.push('Shift');
+        if (e.altKey)   parts.push('Alt');
+        if (e.metaKey)  parts.push('Meta');
+        if (!['Control','Shift','Alt','Meta'].includes(e.key)) parts.push(e.key.toUpperCase());
+        document.getElementById('last-shortcut').textContent = parts.join('+');
+    });
+
+    // Task 4: tab target focused
+    document.getElementById('tab-target').addEventListener('focus', function () {
+        document.getElementById('status4').innerHTML = 'Status: <span class="ok">target focused</span>';
+    });
+    document.getElementById('tab-target').addEventListener('blur', function () {
+        document.getElementById('status4').innerHTML = 'Status: <span class="bad">target not focused</span>';
+    });
+</script>
+</body>
+</html>

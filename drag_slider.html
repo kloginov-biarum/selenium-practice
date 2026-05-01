@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drag by Offset — Slider</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        #track {
+            width: 500px; height: 8px;
+            background: #dee2e6;
+            border-radius: 4px;
+            position: relative;
+            margin: 60px 0 30px 0;
+        }
+        #handle {
+            position: absolute;
+            top: -10px; left: 0;
+            width: 28px; height: 28px;
+            background: #0d6efd;
+            border-radius: 50%;
+            cursor: grab;
+            user-select: none;
+        }
+        #handle:active { cursor: grabbing; }
+        #value-display {
+            position: absolute;
+            top: -38px; left: 0;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        #target-line {
+            position: absolute;
+            top: -6px;
+            width: 2px; height: 20px;
+            background: #198754;
+        }
+        .scale {
+            position: relative;
+            width: 500px;
+            display: flex;
+            justify-content: space-between;
+            color: #6c757d;
+            font-size: 0.85em;
+        }
+        #status { margin-top: 30px; font-size: 1.1em; }
+        .ok  { color: #198754; font-weight: bold; }
+        .bad { color: #dc3545; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>Slider — Drag by Offset</h1>
+    <p>Drag the blue handle to the position marked in green (target value:
+       <b id="target-value">75</b>).
+    </p>
+
+    <div id="track">
+        <div id="value-display">0</div>
+        <div id="target-line"></div>
+        <div id="handle"></div>
+    </div>
+    <div class="scale">
+        <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+    </div>
+
+    <div id="status">Current value: <span id="current-value">0</span></div>
+    <button class="btn btn-primary mt-3" id="check-btn">Check</button>
+    <div id="result" class="mt-3"></div>
+</div>
+
+<script>
+    var track   = document.getElementById('track');
+    var handle  = document.getElementById('handle');
+    var display = document.getElementById('value-display');
+    var current = document.getElementById('current-value');
+    var line    = document.getElementById('target-line');
+
+    var TARGET = 75;
+    var trackWidth = track.offsetWidth;
+    line.style.left = (TARGET / 100) * trackWidth + 'px';
+
+    var dragging = false;
+    var offsetX  = 0;
+
+    handle.addEventListener('mousedown', function (e) {
+        dragging = true;
+        offsetX = e.clientX - handle.getBoundingClientRect().left;
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var trackLeft = track.getBoundingClientRect().left;
+        var x = e.clientX - trackLeft - offsetX + handle.offsetWidth / 2;
+        x = Math.max(0, Math.min(trackWidth, x));
+        handle.style.left = (x - handle.offsetWidth / 2) + 'px';
+        var value = Math.round((x / trackWidth) * 100);
+        display.style.left = x + 'px';
+        display.textContent = value;
+        current.textContent = value;
+    });
+
+    document.addEventListener('mouseup', function () { dragging = false; });
+
+    document.getElementById('check-btn').addEventListener('click', function () {
+        var v = parseInt(current.textContent, 10);
+        var result = document.getElementById('result');
+        if (v === TARGET) {
+            result.innerHTML = '<span class="ok">Correct! Slider is exactly at ' + TARGET + '.</span>';
+        } else {
+            result.innerHTML = '<span class="bad">Wrong: current ' + v + ', expected ' + TARGET + '.</span>';
+        }
+    });
+</script>
+</body>
+</html>

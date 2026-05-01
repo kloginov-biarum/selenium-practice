@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Click and Hold</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        #hold-btn {
+            width: 240px; height: 60px; font-size: 1.1em;
+            user-select: none;
+        }
+        #progress-wrap {
+            width: 240px; height: 12px;
+            background: #dee2e6; border-radius: 6px;
+            margin-top: 16px; overflow: hidden;
+        }
+        #progress-bar {
+            width: 0%; height: 100%;
+            background: #0d6efd;
+            transition: width 0.05s linear;
+        }
+        #status { margin-top: 16px; font-size: 1.05em; }
+        .ok  { color: #198754; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>Click and Hold</h1>
+    <p>Press and <b>hold</b> the button for at least <b>3 seconds</b>. Releasing too early resets the progress.</p>
+
+    <button id="hold-btn" class="btn btn-primary">Hold me</button>
+    <div id="progress-wrap">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="status">Status: <span id="state">idle</span></div>
+</div>
+
+<script>
+    var DURATION = 3000;
+    var btn   = document.getElementById('hold-btn');
+    var bar   = document.getElementById('progress-bar');
+    var state = document.getElementById('state');
+    var startTs = null;
+    var timer   = null;
+
+    function start() {
+        if (state.textContent === 'success') return;
+        startTs = Date.now();
+        state.textContent = 'holding';
+        state.className = '';
+        timer = setInterval(function () {
+            var elapsed = Date.now() - startTs;
+            var pct = Math.min(100, (elapsed / DURATION) * 100);
+            bar.style.width = pct + '%';
+            if (elapsed >= DURATION) {
+                clearInterval(timer);
+                state.textContent = 'success';
+                state.className = 'ok';
+                btn.disabled = true;
+            }
+        }, 50);
+    }
+
+    function stop() {
+        if (timer) clearInterval(timer);
+        if (state.textContent !== 'success') {
+            bar.style.width = '0%';
+            state.textContent = 'released too early';
+        }
+    }
+
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', stop);
+    btn.addEventListener('mouseleave', stop);
+</script>
+</body>
+</html>

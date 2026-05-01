@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multiple Tabs</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; }
+        .secret-box { font-family: monospace; background: #212529; color: #adb5bd; padding: 14px; border-radius: 6px; max-width: 460px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <h1>Multiple Tabs</h1>
+    <p>Click the button below to open <b>three new tabs</b> at once.
+       Each tab contains a code word. Switch through window handles, collect all three words and assemble them in order on the original tab.</p>
+
+    <button id="open-tabs-btn" class="btn btn-primary" onclick="openAllTabs()">Open three tabs</button>
+
+    <div class="mt-4">
+        <label class="form-label">Enter the three words separated by spaces:</label>
+        <input type="text" id="answer" class="form-control" style="max-width: 400px;" placeholder="word1 word2 word3">
+        <button class="btn btn-outline-primary mt-2" onclick="checkAnswer()">Check</button>
+        <div class="mt-2" id="result"></div>
+    </div>
+
+    <hr>
+    <p class="text-muted">Expected order is the order tabs were opened (tab1 tab2 tab3).</p>
+</div>
+
+<script>
+    function openAllTabs() {
+        window.open('tab1.html', '_blank');
+        window.open('tab2.html', '_blank');
+        window.open('tab3.html', '_blank');
+    }
+
+    function checkAnswer() {
+        var v = document.getElementById('answer').value.trim().toLowerCase();
+        var r = document.getElementById('result');
+        if (v === 'selenium driver rocks') {
+            r.innerHTML = '<span class="text-success fw-bold">Correct!</span>';
+        } else {
+            r.innerHTML = '<span class="text-danger">Wrong: ' + v + '</span>';
+        }
+    }
+</script>
+</body>
+</html>

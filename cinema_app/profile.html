@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Profile</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <div id="not-authorized" class="empty-state hidden" data-test-id="not-authorized">
+        Please <a href="login.html" style="color:#e94560;">log in</a> to view your profile.
+    </div>
+
+    <div id="profile-content">
+        <h1>My profile</h1>
+
+        <div id="alert" class="alert alert-success hidden" data-test-id="alert"></div>
+
+        <div class="profile-section">
+            <h2>Account info</h2>
+            <div class="detail-row">
+                <span class="detail-label">Username</span>
+                <span class="detail-value" id="profile-username" data-test-id="profile-username"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Name</span>
+                <span class="detail-value" id="profile-name" data-test-id="profile-name"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="profile-email" data-test-id="profile-email"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Phone</span>
+                <span class="detail-value" id="profile-phone" data-test-id="profile-phone"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Birthdate</span>
+                <span class="detail-value" id="profile-birthdate" data-test-id="profile-birthdate"></span>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>My bookings</h2>
+
+            <div class="filters" style="margin-bottom: 16px;">
+                <div>
+                    <label for="status-filter">Status</label>
+                    <select id="status-filter" name="status" data-test-id="status-filter">
+                        <option value="">All</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="no-bookings" class="empty-state hidden" data-test-id="no-bookings">
+                You have no bookings yet.
+            </div>
+
+            <table class="bookings-table" id="bookings-table" data-test-id="bookings-table">
+                <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Movie</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Seats</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="bookings-tbody" data-test-id="bookings-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    const user = Storage.getCurrentUser();
+
+    if (!user) {
+        document.getElementById('profile-content').classList.add('hidden');
+        document.getElementById('not-authorized').classList.remove('hidden');
+    } else {
+        document.getElementById('profile-username').textContent = user.username;
+        document.getElementById('profile-name').textContent = `${user.firstName} ${user.lastName}`;
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('profile-phone').textContent = user.phone || '—';
+        document.getElementById('profile-birthdate').textContent = user.birthdate || '—';
+
+        function renderBookings() {
+            const all = Storage.getBookings().filter(b => b.username === user.username);
+            const statusFilter = document.getElementById('status-filter').value;
+            const list = statusFilter ? all.filter(b => b.status === statusFilter) : all;
+
+            const tbody = document.getElementById('bookings-tbody');
+            const table = document.getElementById('bookings-table');
+            const empty = document.getElementById('no-bookings');
+
+            if (list.length === 0) {
+                table.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            table.classList.remove('hidden');
+            empty.classList.add('hidden');
+
+            tbody.innerHTML = list
+                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                .map(b => {
+                    const movie = getMovieById(b.movieId);
+                    const showtime = generateShowtimes(b.movieId).find(s => s.id === b.showtimeId);
+                    return `
+                        <tr data-test-id="booking-row" data-booking-id="${b.id}">
+                            <td data-test-id="booking-ref">${b.id}</td>
+                            <td data-test-id="booking-movie">${movie ? movie.title : 'Unknown'}</td>
+                            <td data-test-id="booking-date">${showtime ? formatDate(showtime.date) : '—'}</td>
+                            <td data-test-id="booking-time">${showtime ? showtime.time : '—'}</td>
+                            <td data-test-id="booking-seats">${b.seats.join(', ')}</td>
+                            <td data-test-id="booking-total">$${b.total}</td>
+                            <td><span class="status-badge status-${b.status}" data-test-id="booking-status">${b.status}</span></td>
+                            <td>
+                                ${b.status === 'confirmed'
+                                    ? `<button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" data-test-id="cancel-booking-btn" onclick="cancelBooking('${b.id}')">Cancel</button>`
+                                    : '—'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+
+        window.cancelBooking = function(id) {
+            if (!confirm('Cancel this booking?')) return;
+            const bookings = Storage.getBookings();
+            const b = bookings.find(x => x.id === id);
+            if (b) {
+                b.status = 'cancelled';
+                Storage.saveBookings(bookings);
+                showAlert('alert', `Booking ${id} cancelled`, 'success');
+                renderBookings();
+            }
+        };
+
+        document.getElementById('status-filter').addEventListener('change', renderBookings);
+        renderBookings();
+    }
+</script>
+</body>
+</html>

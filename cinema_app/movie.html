@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Movie</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <div id="movie-not-found" class="empty-state hidden" data-test-id="movie-not-found">
+        Movie not found. <a href="index.html" style="color:#e94560;">Back to home</a>
+    </div>
+
+    <div id="movie-content">
+        <div class="movie-details">
+            <div class="movie-poster" id="movie-poster" data-test-id="movie-poster"></div>
+            <div>
+                <h1 id="movie-title" data-test-id="movie-title"></h1>
+                <div class="movie-meta" style="font-size: 14px; margin-bottom: 16px;">
+                    <span data-test-id="movie-genre" id="movie-genre"></span>
+                    <span data-test-id="movie-year" id="movie-year"></span>
+                    <span data-test-id="movie-duration" id="movie-duration"></span>
+                    <span data-test-id="movie-age" id="movie-age"></span>
+                    <span class="movie-rating" data-test-id="movie-rating" id="movie-rating"></span>
+                </div>
+                <p><strong>Director:</strong> <span id="movie-director" data-test-id="movie-director"></span></p>
+                <p><strong>Ticket price:</strong> $<span id="movie-price" data-test-id="movie-price"></span></p>
+                <p class="movie-description" id="movie-description" data-test-id="movie-description"></p>
+            </div>
+        </div>
+
+        <div class="showtimes">
+            <h2>Select a showtime</h2>
+            <div id="showtimes-list" data-test-id="showtimes-list"></div>
+        </div>
+    </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    const movieId = getQueryParam('id');
+    const movie = getMovieById(movieId);
+
+    if (!movie) {
+        document.getElementById('movie-content').classList.add('hidden');
+        document.getElementById('movie-not-found').classList.remove('hidden');
+    } else {
+        document.title = `CineBook - ${movie.title}`;
+        document.getElementById('movie-poster').textContent = movie.poster;
+        document.getElementById('movie-title').textContent = movie.title;
+        document.getElementById('movie-genre').textContent = movie.genre;
+        document.getElementById('movie-year').textContent = movie.year;
+        document.getElementById('movie-duration').textContent = `${movie.duration} min`;
+        document.getElementById('movie-age').textContent = movie.ageRating;
+        document.getElementById('movie-rating').textContent = `★ ${movie.rating}`;
+        document.getElementById('movie-director').textContent = movie.director;
+        document.getElementById('movie-price').textContent = movie.price;
+        document.getElementById('movie-description').textContent = movie.description;
+
+        const showtimes = generateShowtimes(movie.id);
+        const grouped = {};
+        showtimes.forEach(s => {
+            grouped[s.date] = grouped[s.date] || [];
+            grouped[s.date].push(s);
+        });
+
+        const list = document.getElementById('showtimes-list');
+        list.innerHTML = Object.keys(grouped).map(date => `
+            <div class="showtime-day" data-test-id="showtime-day" data-date="${date}">
+                <div class="showtime-day-title" data-test-id="showtime-date">${formatDate(date)}</div>
+                <div class="showtime-list">
+                    ${grouped[date].map(s => {
+                        const hall = getHallById(s.hallId);
+                        return `
+                            <button class="showtime-btn"
+                                    data-test-id="showtime-btn"
+                                    data-showtime-id="${s.id}"
+                                    onclick="window.location.href='seats.html?showtime=${s.id}'">
+                                <span class="time">${s.time}</span>
+                                <span class="hall">${hall.name}</span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>

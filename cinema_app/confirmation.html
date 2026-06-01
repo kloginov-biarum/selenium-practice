@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Booking Confirmed</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <div id="not-found" class="empty-state hidden" data-test-id="not-found">
+        Booking not found.
+    </div>
+
+    <div class="confirmation-card" id="confirmation-card">
+        <div class="confirmation-icon" data-test-id="success-icon">✓</div>
+        <h1 id="confirmation-title" data-test-id="confirmation-title">Booking confirmed!</h1>
+        <p style="color:#b8b8d4;margin: 8px 0 20px;">
+            Booking reference: <strong id="booking-id" data-test-id="booking-id"></strong>
+        </p>
+
+        <div class="confirmation-details">
+            <div class="detail-row">
+                <span class="detail-label">Movie</span>
+                <span class="detail-value" id="movie" data-test-id="conf-movie"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value" id="date" data-test-id="conf-date"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Time</span>
+                <span class="detail-value" id="time" data-test-id="conf-time"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Hall</span>
+                <span class="detail-value" id="hall" data-test-id="conf-hall"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Seats</span>
+                <span class="detail-value" id="seats" data-test-id="conf-seats"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Customer</span>
+                <span class="detail-value" id="customer" data-test-id="conf-customer"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="email" data-test-id="conf-email"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Payment</span>
+                <span class="detail-value" id="payment" data-test-id="conf-payment"></span>
+            </div>
+            <div class="detail-row" style="margin-top:8px;">
+                <span class="detail-label" style="font-size:16px;">Total paid</span>
+                <span class="detail-value" id="total" data-test-id="conf-total" style="color:#f5c518;font-size:20px;"></span>
+            </div>
+        </div>
+
+        <div style="display:flex; gap: 12px; justify-content: center;">
+            <a href="index.html" class="btn btn-secondary" id="home-btn" data-test-id="home-btn">Back to home</a>
+            <a href="profile.html" class="btn" id="my-bookings-btn" data-test-id="my-bookings-btn">My bookings</a>
+        </div>
+    </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    const bookingId = getQueryParam('id');
+    const booking = Storage.getBookings().find(b => b.id === bookingId);
+
+    if (!booking) {
+        document.getElementById('confirmation-card').classList.add('hidden');
+        document.getElementById('not-found').classList.remove('hidden');
+    } else {
+        const movie = getMovieById(booking.movieId);
+        const showtimes = generateShowtimes(movie.id);
+        const showtime = showtimes.find(s => s.id === booking.showtimeId);
+        const hall = getHallById(showtime.hallId);
+
+        document.getElementById('booking-id').textContent = booking.id;
+        document.getElementById('movie').textContent = movie.title;
+        document.getElementById('date').textContent = formatDate(showtime.date);
+        document.getElementById('time').textContent = showtime.time;
+        document.getElementById('hall').textContent = hall.name;
+        document.getElementById('seats').textContent = booking.seats.join(', ');
+        document.getElementById('customer').textContent = booking.customer.firstName + ' ' + booking.customer.lastName;
+        document.getElementById('email').textContent = booking.customer.email;
+        const paymentLabels = { card: 'Credit card', paypal: 'PayPal', apple_pay: 'Apple Pay' };
+        document.getElementById('payment').textContent = paymentLabels[booking.paymentMethod] || booking.paymentMethod;
+        document.getElementById('total').textContent = '$' + booking.total;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <h1 id="page-title">Now Showing</h1>
+
+    <div class="filters" id="filters">
+        <div>
+            <label for="search-input">Search by title</label>
+            <input type="text" id="search-input" name="search" data-test-id="search-input" placeholder="Type movie title...">
+        </div>
+        <div>
+            <label for="genre-filter">Genre</label>
+            <select id="genre-filter" name="genre" data-test-id="genre-filter">
+                <option value="">All Genres</option>
+                <option value="Action">Action</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Drama">Drama</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Crime">Crime</option>
+                <option value="Animation">Animation</option>
+            </select>
+        </div>
+        <div>
+            <label for="age-filter">Age rating</label>
+            <select id="age-filter" name="age" data-test-id="age-filter">
+                <option value="">All</option>
+                <option value="PG">PG</option>
+                <option value="PG-13">PG-13</option>
+                <option value="R">R</option>
+            </select>
+        </div>
+        <div>
+            <label for="sort-filter">Sort by</label>
+            <select id="sort-filter" name="sort" data-test-id="sort-filter">
+                <option value="title">Title (A-Z)</option>
+                <option value="rating">Rating (high to low)</option>
+                <option value="year">Year (newest first)</option>
+                <option value="price">Price (low to high)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="results-info" class="empty-state hidden" data-test-id="results-info"></div>
+
+    <div class="movies-grid" id="movies-grid" data-test-id="movies-grid"></div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    function renderMovies() {
+        const search = document.getElementById('search-input').value.toLowerCase().trim();
+        const genre = document.getElementById('genre-filter').value;
+        const age = document.getElementById('age-filter').value;
+        const sort = document.getElementById('sort-filter').value;
+
+        let list = MOVIES.filter(m => {
+            if (search && !m.title.toLowerCase().includes(search)) return false;
+            if (genre && m.genre !== genre) return false;
+            if (age && m.ageRating !== age) return false;
+            return true;
+        });
+
+        list.sort((a, b) => {
+            if (sort === 'title') return a.title.localeCompare(b.title);
+            if (sort === 'rating') return b.rating - a.rating;
+            if (sort === 'year') return b.year - a.year;
+            if (sort === 'price') return a.price - b.price;
+            return 0;
+        });
+
+        const grid = document.getElementById('movies-grid');
+        const info = document.getElementById('results-info');
+
+        if (list.length === 0) {
+            grid.innerHTML = '';
+            info.classList.remove('hidden');
+            info.textContent = 'No movies found matching your filters';
+            return;
+        }
+        info.classList.add('hidden');
+
+        grid.innerHTML = list.map(m => `
+            <div class="movie-card" data-test-id="movie-card" data-movie-id="${m.id}" onclick="window.location.href='movie.html?id=${m.id}'">
+                <div class="movie-poster">${m.poster}</div>
+                <div class="movie-info">
+                    <div class="movie-title" data-test-id="movie-title">${m.title}</div>
+                    <div class="movie-meta">
+                        <span data-test-id="movie-genre">${m.genre}</span>
+                        <span data-test-id="movie-age">${m.ageRating}</span>
+                        <span class="movie-rating" data-test-id="movie-rating">★ ${m.rating}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('search-input').addEventListener('input', renderMovies);
+    document.getElementById('genre-filter').addEventListener('change', renderMovies);
+    document.getElementById('age-filter').addEventListener('change', renderMovies);
+    document.getElementById('sort-filter').addEventListener('change', renderMovies);
+
+    renderMovies();
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Select Seats</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <h1 id="page-title">Select your seats</h1>
+
+    <div id="invalid-showtime" class="empty-state hidden" data-test-id="invalid-showtime">
+        Showtime not found. <a href="index.html" style="color:#e94560;">Back to home</a>
+    </div>
+
+    <div id="seats-content">
+        <div class="profile-section" id="showtime-info">
+            <h3 id="movie-title" data-test-id="movie-title"></h3>
+            <p>
+                <span id="showtime-date" data-test-id="showtime-date"></span>
+                at <span id="showtime-time" data-test-id="showtime-time"></span>
+                — <span id="hall-name" data-test-id="hall-name"></span>
+            </p>
+        </div>
+
+        <div class="seats-container">
+            <div class="screen">SCREEN</div>
+            <div class="seats-grid" id="seats-grid" data-test-id="seats-grid"></div>
+
+            <div class="seat-legend">
+                <div class="legend-item"><div class="legend-box" style="background:#0f3460;"></div> Standard ($base)</div>
+                <div class="legend-item"><div class="legend-box" style="background:#8e44ad;"></div> VIP (+$5)</div>
+                <div class="legend-item"><div class="legend-box" style="background:#27ae60;"></div> Selected</div>
+                <div class="legend-item"><div class="legend-box" style="background:#555;"></div> Occupied</div>
+            </div>
+
+            <div class="booking-summary">
+                <div class="summary-info">
+                    <div>Selected seats: <span id="selected-seats" data-test-id="selected-seats">None</span></div>
+                    <div>Tickets: <span id="ticket-count" data-test-id="ticket-count">0</span></div>
+                </div>
+                <div class="summary-total">$<span id="total-price" data-test-id="total-price">0</span></div>
+                <button class="btn" id="proceed-btn" data-test-id="proceed-btn" disabled>Proceed to checkout</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    const showtimeId = getQueryParam('showtime');
+    let movie, showtime, hall;
+
+    if (showtimeId) {
+        const parts = showtimeId.split('-');
+        const movieId = parseInt(parts[0]);
+        movie = getMovieById(movieId);
+        if (movie) {
+            const all = generateShowtimes(movie.id);
+            showtime = all.find(s => s.id === showtimeId);
+            if (showtime) hall = getHallById(showtime.hallId);
+        }
+    }
+
+    const ROWS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    const SEATS_PER_ROW = 10;
+    const VIP_ROWS = ['E', 'F'];
+    const selected = new Set();
+
+    if (!showtime) {
+        document.getElementById('seats-content').classList.add('hidden');
+        document.getElementById('invalid-showtime').classList.remove('hidden');
+    } else {
+        document.title = `CineBook - ${movie.title} seats`;
+        document.getElementById('movie-title').textContent = movie.title;
+        document.getElementById('showtime-date').textContent = formatDate(showtime.date);
+        document.getElementById('showtime-time').textContent = showtime.time;
+        document.getElementById('hall-name').textContent = hall.name;
+
+        const occupied = new Set(Storage.getOccupiedSeats(showtimeId));
+        const grid = document.getElementById('seats-grid');
+
+        ROWS.forEach(row => {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'seat-row';
+            rowEl.setAttribute('data-row', row);
+
+            const label = document.createElement('div');
+            label.className = 'row-label';
+            label.textContent = row;
+            rowEl.appendChild(label);
+
+            for (let i = 1; i <= SEATS_PER_ROW; i++) {
+                const seatId = `${row}${i}`;
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.textContent = i;
+                seat.setAttribute('data-test-id', 'seat');
+                seat.setAttribute('data-seat-id', seatId);
+                seat.setAttribute('data-row', row);
+                seat.setAttribute('data-number', i);
+
+                if (VIP_ROWS.includes(row)) {
+                    seat.classList.add('vip');
+                    seat.setAttribute('data-seat-type', 'vip');
+                } else {
+                    seat.setAttribute('data-seat-type', 'standard');
+                }
+
+                if (occupied.has(seatId)) {
+                    seat.classList.add('occupied');
+                    seat.setAttribute('data-occupied', 'true');
+                } else {
+                    seat.addEventListener('click', () => toggleSeat(seatId, seat));
+                }
+
+                rowEl.appendChild(seat);
+            }
+
+            const labelRight = document.createElement('div');
+            labelRight.className = 'row-label';
+            labelRight.textContent = row;
+            rowEl.appendChild(labelRight);
+
+            grid.appendChild(rowEl);
+        });
+
+        function toggleSeat(seatId, el) {
+            if (selected.has(seatId)) {
+                selected.delete(seatId);
+                el.classList.remove('selected');
+            } else {
+                if (selected.size >= 8) {
+                    alert('Maximum 8 seats per booking');
+                    return;
+                }
+                selected.add(seatId);
+                el.classList.add('selected');
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const sortedSeats = Array.from(selected).sort();
+            const seatsLabel = document.getElementById('selected-seats');
+            seatsLabel.textContent = sortedSeats.length ? sortedSeats.join(', ') : 'None';
+            document.getElementById('ticket-count').textContent = selected.size;
+
+            let total = 0;
+            sortedSeats.forEach(s => {
+                const isVip = VIP_ROWS.includes(s[0]);
+                total += movie.price + (isVip ? 5 : 0);
+            });
+            document.getElementById('total-price').textContent = total;
+
+            const btn = document.getElementById('proceed-btn');
+            btn.disabled = selected.size === 0;
+        }
+
+        document.getElementById('proceed-btn').addEventListener('click', () => {
+            const sortedSeats = Array.from(selected).sort();
+            const total = parseInt(document.getElementById('total-price').textContent);
+            Storage.setPendingBooking({
+                showtimeId: showtime.id,
+                movieId: movie.id,
+                seats: sortedSeats,
+                total: total
+            });
+            window.location.href = 'checkout.html';
+        });
+    }
+</script>
+</body>
+</html>

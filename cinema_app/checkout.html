@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook - Checkout</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" id="logo" data-test-id="logo">CineBook</a>
+    <nav>
+        <a href="index.html" id="nav-home" data-test-id="nav-home">Movies</a>
+        <div id="user-info"></div>
+    </nav>
+</header>
+
+<main>
+    <h1>Checkout</h1>
+
+    <div id="no-booking" class="empty-state hidden" data-test-id="no-booking">
+        No booking in progress. <a href="index.html" style="color:#e94560;">Choose a movie</a>
+    </div>
+
+    <div id="checkout-content" style="display: grid; grid-template-columns: 1fr 360px; gap: 24px;">
+        <form id="checkout-form" class="form-container" style="margin: 0; max-width: none;" novalidate>
+            <h2>Customer details</h2>
+
+            <div id="form-alert" class="alert alert-error hidden" data-test-id="form-alert"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">First name *</label>
+                    <input type="text" id="first-name" name="firstName" data-test-id="first-name" required>
+                    <div class="form-error" id="first-name-error" data-test-id="first-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last name *</label>
+                    <input type="text" id="last-name" name="lastName" data-test-id="last-name" required>
+                    <div class="form-error" id="last-name-error" data-test-id="last-name-error"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" data-test-id="email" required>
+                <div class="form-error" id="email-error" data-test-id="email-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" data-test-id="phone" placeholder="+1 555 123 4567">
+                <div class="form-error" id="phone-error" data-test-id="phone-error"></div>
+            </div>
+
+            <h2 style="margin-top: 24px;">Payment</h2>
+
+            <div class="form-group">
+                <label for="payment-method">Payment method *</label>
+                <select id="payment-method" name="paymentMethod" data-test-id="payment-method">
+                    <option value="card">Credit card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="apple_pay">Apple Pay</option>
+                </select>
+            </div>
+
+            <div id="card-fields">
+                <div class="form-group">
+                    <label for="card-number">Card number *</label>
+                    <input type="text" id="card-number" name="cardNumber" data-test-id="card-number" maxlength="19" placeholder="1234 5678 9012 3456">
+                    <div class="form-error" id="card-number-error" data-test-id="card-number-error"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-expiry">Expiry (MM/YY) *</label>
+                        <input type="text" id="card-expiry" name="cardExpiry" data-test-id="card-expiry" maxlength="5" placeholder="12/29">
+                        <div class="form-error" id="card-expiry-error" data-test-id="card-expiry-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-cvv">CVV *</label>
+                        <input type="password" id="card-cvv" name="cardCvv" data-test-id="card-cvv" maxlength="4" placeholder="123">
+                        <div class="form-error" id="card-cvv-error" data-test-id="card-cvv-error"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="terms" name="terms" data-test-id="terms"> I agree to the terms and conditions *
+                </label>
+                <div class="form-error" id="terms-error" data-test-id="terms-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="newsletter" name="newsletter" data-test-id="newsletter"> Subscribe to newsletter
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <a href="index.html" class="btn btn-secondary" id="cancel-btn" data-test-id="cancel-btn">Cancel</a>
+                <button type="submit" class="btn" id="confirm-btn" data-test-id="confirm-btn">Confirm booking</button>
+            </div>
+        </form>
+
+        <aside class="profile-section" style="margin: 0;">
+            <h2>Order summary</h2>
+            <div class="detail-row">
+                <span class="detail-label">Movie</span>
+                <span class="detail-value" id="summary-movie" data-test-id="summary-movie"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value" id="summary-date" data-test-id="summary-date"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Time</span>
+                <span class="detail-value" id="summary-time" data-test-id="summary-time"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Hall</span>
+                <span class="detail-value" id="summary-hall" data-test-id="summary-hall"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Seats</span>
+                <span class="detail-value" id="summary-seats" data-test-id="summary-seats"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Tickets</span>
+                <span class="detail-value" id="summary-tickets" data-test-id="summary-tickets"></span>
+            </div>
+            <div class="detail-row" style="margin-top: 12px;">
+                <span class="detail-label" style="font-size: 16px;">Total</span>
+                <span class="detail-value summary-total" id="summary-total" data-test-id="summary-total" style="color:#f5c518;font-size:20px;"></span>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+    const pending = Storage.getPendingBooking();
+
+    if (!pending) {
+        document.getElementById('checkout-content').classList.add('hidden');
+        document.getElementById('no-booking').classList.remove('hidden');
+    } else {
+        const movie = getMovieById(pending.movieId);
+        const showtimes = generateShowtimes(movie.id);
+        const showtime = showtimes.find(s => s.id === pending.showtimeId);
+        const hall = getHallById(showtime.hallId);
+
+        document.getElementById('summary-movie').textContent = movie.title;
+        document.getElementById('summary-date').textContent = formatDate(showtime.date);
+        document.getElementById('summary-time').textContent = showtime.time;
+        document.getElementById('summary-hall').textContent = hall.name;
+        document.getElementById('summary-seats').textContent = pending.seats.join(', ');
+        document.getElementById('summary-tickets').textContent = pending.seats.length;
+        document.getElementById('summary-total').textContent = '$' + pending.total;
+
+        const user = Storage.getCurrentUser();
+        if (user) {
+            document.getElementById('first-name').value = user.firstName || '';
+            document.getElementById('last-name').value = user.lastName || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+        }
+
+        document.getElementById('payment-method').addEventListener('change', e => {
+            document.getElementById('card-fields').style.display = e.target.value === 'card' ? 'block' : 'none';
+        });
+
+        document.getElementById('checkout-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const errors = validateForm();
+            if (Object.keys(errors).length > 0) {
+                Object.keys(errors).forEach(field => {
+                    document.getElementById(field + '-error').textContent = errors[field];
+                });
+                showAlert('form-alert', 'Please fix the errors above', 'error');
+                return;
+            }
+
+            ['first-name', 'last-name', 'email', 'phone', 'card-number', 'card-expiry', 'card-cvv', 'terms']
+                .forEach(f => { const el = document.getElementById(f + '-error'); if (el) el.textContent = ''; });
+            hideAlert('form-alert');
+
+            const booking = {
+                id: 'BK' + Date.now(),
+                movieId: pending.movieId,
+                showtimeId: pending.showtimeId,
+                seats: pending.seats,
+                total: pending.total,
+                customer: {
+                    firstName: document.getElementById('first-name').value.trim(),
+                    lastName: document.getElementById('last-name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim()
+                },
+                paymentMethod: document.getElementById('payment-method').value,
+                username: user ? user.username : null,
+                createdAt: new Date().toISOString(),
+                status: 'confirmed'
+            };
+
+            Storage.addBooking(booking);
+            Storage.clearPendingBooking();
+            window.location.href = 'confirmation.html?id=' + booking.id;
+        });
+
+        function validateForm() {
+            const errors = {};
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const paymentMethod = document.getElementById('payment-method').value;
+            const terms = document.getElementById('terms').checked;
+
+            if (firstName.length < 2) errors['first-name'] = 'First name must be at least 2 characters';
+            if (lastName.length < 2) errors['last-name'] = 'Last name must be at least 2 characters';
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors['email'] = 'Invalid email address';
+            if (phone && !/^[\d\s+()-]{7,}$/.test(phone)) errors['phone'] = 'Invalid phone number';
+
+            if (paymentMethod === 'card') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const expiry = document.getElementById('card-expiry').value;
+                const cvv = document.getElementById('card-cvv').value;
+                if (!/^\d{16}$/.test(cardNumber)) errors['card-number'] = 'Card number must be 16 digits';
+                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) errors['card-expiry'] = 'Use format MM/YY';
+                if (!/^\d{3,4}$/.test(cvv)) errors['card-cvv'] = 'CVV must be 3 or 4 digits';
+            }
+
+            if (!terms) errors['terms'] = 'You must accept the terms';
+
+            return errors;
+        }
+    }
+</script>
+</body>
+</html>

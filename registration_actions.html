@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration — ActionChains Playground</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; background: #f6f8fb; }
+        .container { max-width: 900px; }
+        section.card { margin-bottom: 24px; }
+        .card-header { font-weight: 600; }
+        .hint { color: #6c757d; font-size: 0.9em; margin-top: 4px; }
+
+        /* Hover dropdown (country) */
+        .hover-menu { position: relative; display: inline-block; }
+        .hover-menu > .menu-btn {
+            background: #fff; border: 1px solid #ced4da; border-radius: 4px;
+            padding: 8px 16px; cursor: pointer; min-width: 220px; text-align: left;
+        }
+        .hover-menu .menu-list {
+            display: none; position: absolute; top: 100%; left: 0;
+            background: #fff; border: 1px solid #ced4da; border-radius: 4px;
+            list-style: none; padding: 4px 0; margin: 0; min-width: 220px; z-index: 20;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .hover-menu:hover .menu-list { display: block; }
+        .menu-list > li { position: relative; padding: 8px 16px; cursor: pointer; }
+        .menu-list > li:hover { background: #e7f1ff; }
+        .submenu {
+            display: none; position: absolute; top: 0; left: 100%;
+            background: #fff; border: 1px solid #ced4da; border-radius: 4px;
+            list-style: none; padding: 4px 0; margin: 0; min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .menu-list > li:hover > .submenu { display: block; }
+        .submenu > li { padding: 8px 16px; }
+        .submenu > li:hover { background: #cfe2ff; }
+
+        /* Drag & drop avatar */
+        .avatar-row { display: flex; align-items: center; gap: 24px; }
+        #avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #0d6efd; color: #fff; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 2em; font-weight: bold; cursor: grab; user-select: none;
+        }
+        #avatar:active { cursor: grabbing; }
+        #avatar-zone {
+            width: 220px; height: 110px; border: 2px dashed #adb5bd;
+            border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; color: #6c757d; text-align: center;
+        }
+        #avatar-zone.over { border-color: #0d6efd; background: #e7f1ff; color: #0d6efd; }
+        #avatar-zone.filled { border-style: solid; border-color: #198754; color: #198754; }
+
+        /* Slider captcha */
+        #captcha-img {
+            border: 1px solid #ced4da; border-radius: 4px;
+            padding: 12px 20px; background: #fff; display: inline-block;
+            font-family: monospace; font-size: 1.4em; letter-spacing: 4px;
+        }
+        #track {
+            width: 500px; height: 8px; background: #dee2e6;
+            border-radius: 4px; position: relative; margin: 40px 0 30px 0;
+        }
+        #handle {
+            position: absolute; top: -10px; left: 0;
+            width: 28px; height: 28px; background: #0d6efd;
+            border-radius: 50%; cursor: grab; user-select: none;
+        }
+        #handle:active { cursor: grabbing; }
+        #value-display {
+            position: absolute; top: -38px; left: 0;
+            transform: translateX(-50%); font-weight: bold; color: #0d6efd;
+        }
+        .scale {
+            width: 500px; display: flex; justify-content: space-between;
+            color: #6c757d; font-size: 0.85em;
+        }
+        #captcha-status { margin-top: 12px; }
+        #captcha-status.ok { color: #198754; font-weight: bold; }
+        #captcha-status.bad { color: #dc3545; }
+
+        /* Double click nickname */
+        #nickname {
+            background: #e9ecef; cursor: not-allowed;
+        }
+        #nickname.unlocked { background: #fff; cursor: text; }
+        #nickname-status { font-size: 0.85em; color: #6c757d; }
+        #nickname-status.unlocked { color: #198754; }
+
+        /* Right click context menu */
+        #plan-area {
+            border: 1px dashed #ced4da; border-radius: 6px;
+            padding: 30px; text-align: center; background: #fff;
+            color: #495057; user-select: none;
+        }
+        #plan-area .badge { font-size: 1em; }
+        #ctx-menu {
+            display: none; position: absolute; z-index: 100;
+            background: #fff; border: 1px solid #ced4da;
+            border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            list-style: none; padding: 4px 0; margin: 0; min-width: 180px;
+        }
+        #ctx-menu li { padding: 8px 16px; cursor: pointer; }
+        #ctx-menu li:hover { background: #e7f1ff; }
+
+        /* Click and hold */
+        #hold-btn {
+            position: relative; overflow: hidden;
+            width: 260px; height: 44px;
+        }
+        #hold-fill {
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 0%; background: rgba(25, 135, 84, 0.35);
+            transition: width 0.05s linear;
+        }
+        #hold-label { position: relative; z-index: 1; }
+        #hold-status { font-size: 0.9em; margin-top: 6px; }
+        #hold-status.ok { color: #198754; font-weight: bold; }
+
+        /* Sortable skills */
+        .sort-list { list-style: none; padding: 0; max-width: 360px; }
+        .sort-item {
+            background: #fff; border: 1px solid #ced4da; border-radius: 4px;
+            padding: 10px 14px; margin-bottom: 6px; cursor: grab; user-select: none;
+        }
+        .sort-item .order { display: inline-block; width: 22px; color: #6c757d; }
+        .sort-item.dragging { opacity: 0.4; }
+        .sort-item.drop-target { border-color: #0d6efd; border-style: dashed; }
+
+        /* Stars */
+        .stars { display: inline-block; font-size: 2.2em; cursor: pointer; user-select: none; }
+        .star { color: #ced4da; padding: 0 4px; transition: color 0.1s; }
+        .star.hover, .star.selected { color: #ffc107; }
+
+        /* Multi-select interests */
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 130px); gap: 10px;
+        }
+        .card-item {
+            background: #fff; border: 2px solid #ced4da; border-radius: 6px;
+            padding: 18px 8px; text-align: center; cursor: pointer;
+            user-select: none; font-weight: 500;
+        }
+        .card-item.selected {
+            background: #cfe2ff; border-color: #0d6efd; color: #084298;
+        }
+
+        /* Bio (keyboard shortcuts) */
+        #bio { font-family: inherit; }
+        .kbd {
+            background: #f1f3f5; border: 1px solid #ced4da; border-radius: 3px;
+            padding: 1px 6px; font-family: monospace; font-size: 0.85em;
+        }
+
+        /* Submit gate */
+        #submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Result */
+        #result {
+            display: none; margin-top: 24px; padding: 16px;
+            background: #d1e7dd; border: 1px solid #badbcc;
+            border-radius: 6px; color: #0f5132;
+        }
+        #result pre { margin: 8px 0 0 0; color: #0f5132; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Registration — ActionChains Playground</h1>
+    <p class="text-muted">A single form that covers every common Selenium <code>ActionChains</code> scenario.
+       Fill out every section to unlock the Submit button.</p>
+
+    <form id="reg-form" autocomplete="off">
+
+        <!-- 1. Plain text fields -->
+        <section class="card">
+            <div class="card-header">1. Basic info <span class="text-muted small">(send_keys)</span></div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">First name *</label>
+                    <input type="text" id="first-name" name="first-name" class="form-control" maxlength="32" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last name *</label>
+                    <input type="text" id="last-name" name="last-name" class="form-control" maxlength="32" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Password *</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Hover dropdown -->
+        <section class="card">
+            <div class="card-header">2. Country &amp; Region <span class="text-muted small">(move_to_element — hover menu)</span></div>
+            <div class="card-body">
+                <p class="hint">Hover over the button, then hover over a country to reveal its regions, then click the region.</p>
+                <div class="hover-menu" id="country-menu">
+                    <button type="button" class="menu-btn" id="country-btn">— choose country —</button>
+                    <ul class="menu-list">
+                        <li data-country="Germany">Germany
+                            <ul class="submenu">
+                                <li data-region="Berlin">Berlin</li>
+                                <li data-region="Bavaria">Bavaria</li>
+                                <li data-region="Hamburg">Hamburg</li>
+                            </ul>
+                        </li>
+                        <li data-country="Spain">Spain
+                            <ul class="submenu">
+                                <li data-region="Madrid">Madrid</li>
+                                <li data-region="Catalonia">Catalonia</li>
+                                <li data-region="Andalusia">Andalusia</li>
+                            </ul>
+                        </li>
+                        <li data-country="Poland">Poland
+                            <ul class="submenu">
+                                <li data-region="Mazovia">Mazovia</li>
+                                <li data-region="Lesser Poland">Lesser Poland</li>
+                                <li data-region="Pomerania">Pomerania</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <input type="hidden" id="country" name="country">
+                <input type="hidden" id="region" name="region">
+                <div class="mt-2"><small id="country-chosen" class="text-muted">nothing chosen yet</small></div>
+            </div>
+        </section>
+
+        <!-- 3. Drag & drop avatar -->
+        <section class="card">
+            <div class="card-header">3. Avatar upload <span class="text-muted small">(drag_and_drop)</span></div>
+            <div class="card-body">
+                <p class="hint">Drag the round avatar into the dashed zone.</p>
+                <div class="avatar-row">
+                    <div id="avatar" draggable="true" data-id="me">A</div>
+                    <div id="avatar-zone">Drop avatar here</div>
+                </div>
+                <input type="hidden" id="avatar-uploaded" name="avatar-uploaded" value="false">
+            </div>
+        </section>
+
+        <!-- 4. Slider captcha (drag by offset) -->
+        <section class="card">
+            <div class="card-header">4. Prove you are not a robot <span class="text-muted small">(click_and_hold + move_by_offset + release)</span></div>
+            <div class="card-body">
+                <p class="hint">Read the target number from the picture's <code>alt</code> attribute and drag the slider so
+                   that <span id="current-value">0</span> equals that number.</p>
+
+                <img id="captcha-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='60'><rect width='100%' height='100%' fill='%23fff8e1'/><text x='50%' y='55%' text-anchor='middle' font-family='monospace' font-size='28' fill='%23b8860b'>captcha</text></svg>"
+                     alt="42" data-target="42" width="160" height="60">
+
+                <div id="track">
+                    <div id="value-display">0</div>
+                    <div id="handle"></div>
+                </div>
+                <div class="scale">
+                    <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+                </div>
+
+                <div id="captcha-status">Slider value: <span>0</span></div>
+                <input type="hidden" id="captcha-ok" name="captcha-ok" value="false">
+            </div>
+        </section>
+
+        <!-- 5. Double click to unlock nickname -->
+        <section class="card">
+            <div class="card-header">5. Nickname <span class="text-muted small">(double_click)</span></div>
+            <div class="card-body">
+                <p class="hint">The field is locked. <b>Double-click</b> it to enable editing.</p>
+                <input type="text" id="nickname" name="nickname" class="form-control" placeholder="locked — double-click to edit" readonly>
+                <div id="nickname-status">status: locked</div>
+            </div>
+        </section>
+
+        <!-- 6. Right click for account type -->
+        <section class="card">
+            <div class="card-header">6. Account type <span class="text-muted small">(context_click)</span></div>
+            <div class="card-body">
+                <p class="hint"><b>Right-click</b> inside the box below and pick a plan from the context menu.</p>
+                <div id="plan-area">
+                    Plan: <span class="badge bg-secondary" id="plan-badge">not selected</span>
+                </div>
+                <input type="hidden" id="plan" name="plan">
+            </div>
+        </section>
+        <ul id="ctx-menu">
+            <li data-plan="Free">Free</li>
+            <li data-plan="Pro">Pro</li>
+            <li data-plan="Enterprise">Enterprise</li>
+        </ul>
+
+        <!-- 7. Click and hold to confirm -->
+        <section class="card">
+            <div class="card-header">7. Confirm identity <span class="text-muted small">(click_and_hold + pause + release)</span></div>
+            <div class="card-body">
+                <p class="hint">Press and hold the button for <b>3 seconds</b> to confirm.</p>
+                <button type="button" id="hold-btn" class="btn btn-outline-success">
+                    <span id="hold-fill"></span>
+                    <span id="hold-label">Hold to confirm (0%)</span>
+                </button>
+                <div id="hold-status">status: not confirmed</div>
+                <input type="hidden" id="confirmed" name="confirmed" value="false">
+            </div>
+        </section>
+
+        <!-- 8. Sortable skills -->
+        <section class="card">
+            <div class="card-header">8. Sort your skills by priority <span class="text-muted small">(drag_and_drop between siblings)</span></div>
+            <div class="card-body">
+                <p class="hint">Drag items so that the order from top to bottom is:
+                   <b>Python → Selenium → SQL → Git → Docker</b>.</p>
+                <ul class="sort-list" id="skills-list">
+                    <li class="sort-item" draggable="true" data-id="docker"><span class="order">1.</span> Docker</li>
+                    <li class="sort-item" draggable="true" data-id="git"><span class="order">2.</span> Git</li>
+                    <li class="sort-item" draggable="true" data-id="python"><span class="order">3.</span> Python</li>
+                    <li class="sort-item" draggable="true" data-id="sql"><span class="order">4.</span> SQL</li>
+                    <li class="sort-item" draggable="true" data-id="selenium"><span class="order">5.</span> Selenium</li>
+                </ul>
+                <input type="hidden" id="skills-order" name="skills-order">
+                <div><small id="skills-status" class="text-muted">order: docker, git, python, sql, selenium</small></div>
+            </div>
+        </section>
+
+        <!-- 9. Star rating -->
+        <section class="card">
+            <div class="card-header">9. Rate your Selenium experience <span class="text-muted small">(move_to_element + click)</span></div>
+            <div class="card-body">
+                <p class="hint">Hover over the stars to preview, click to set the rating (1–5).</p>
+                <div class="stars" id="stars">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <div>Selected rating: <span id="rating-value">0</span> / 5</div>
+                <input type="hidden" id="rating" name="rating" value="0">
+            </div>
+        </section>
+
+        <!-- 10. Multi-select interests -->
+        <section class="card">
+            <div class="card-header">10. Pick your interests <span class="text-muted small">(key_down(Ctrl) + click + key_up(Ctrl))</span></div>
+            <div class="card-body">
+                <p class="hint">Click first card normally, then hold <b>Ctrl</b> (or <b>Cmd</b>) and click two more to
+                   end up with <b>exactly 3 selected</b>.</p>
+                <div class="grid" id="interests">
+                    <div class="card-item" data-id="api">API</div>
+                    <div class="card-item" data-id="ui">UI</div>
+                    <div class="card-item" data-id="mobile">Mobile</div>
+                    <div class="card-item" data-id="perf">Performance</div>
+                    <div class="card-item" data-id="security">Security</div>
+                    <div class="card-item" data-id="ci">CI/CD</div>
+                    <div class="card-item" data-id="db">Databases</div>
+                    <div class="card-item" data-id="cloud">Cloud</div>
+                </div>
+                <div class="mt-2"><small id="interests-status" class="text-muted">selected: none</small></div>
+                <input type="hidden" id="interests-selected" name="interests-selected">
+            </div>
+        </section>
+
+        <!-- 11. Bio + keyboard shortcuts -->
+        <section class="card">
+            <div class="card-header">11. About you <span class="text-muted small">(send_keys + key_down(CONTROL))</span></div>
+            <div class="card-body">
+                <p class="hint">Type a short bio.
+                   Then click inside the field and press
+                   <span class="kbd">Ctrl</span>+<span class="kbd">A</span>,
+                   <span class="kbd">Ctrl</span>+<span class="kbd">C</span> to copy,
+                   move to the second field and press
+                   <span class="kbd">Ctrl</span>+<span class="kbd">V</span> to paste — the duplicate must match.</p>
+                <textarea id="bio" name="bio" class="form-control mb-2" rows="3" placeholder="Write something about yourself…"></textarea>
+                <input type="text" id="bio-copy" name="bio-copy" class="form-control" placeholder="Paste the copied bio here">
+                <div class="mt-2"><small id="bio-status" class="text-muted">copy check: not matching</small></div>
+            </div>
+        </section>
+
+        <!-- Submit -->
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" disabled>
+            Submit (or press <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span>)
+        </button>
+        <div id="gate-status" class="hint mt-2"></div>
+
+        <div id="result">
+            <b>Registration submitted!</b>
+            <pre id="result-json"></pre>
+        </div>
+    </form>
+</div>
+
+<script>
+/* ---------------------------------------------------------------- helpers */
+function $(id) { return document.getElementById(id); }
+function setHidden(id, v) { $(id).value = v; }
+function flag(id) { return $(id).value === 'true' || (id === 'rating' && parseInt($(id).value, 10) > 0); }
+
+/* ------------------------------------------------------------ 2. Hover menu */
+document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
+    li.addEventListener('click', function () {
+        var country = li.parentElement.parentElement.dataset.country;
+        var region  = li.dataset.region;
+        setHidden('country', country);
+        setHidden('region', region);
+        $('country-btn').textContent = country + ' / ' + region;
+        $('country-chosen').textContent = 'chosen: ' + country + ' — ' + region;
+        updateGate();
+    });
+});
+
+/* ------------------------------------------------------------ 3. Avatar D&D */
+(function () {
+    var avatar = $('avatar');
+    var zone   = $('avatar-zone');
+
+    avatar.addEventListener('dragstart', function (e) {
+        e.dataTransfer.setData('text/plain', 'avatar');
+    });
+    zone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        zone.classList.add('over');
+    });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('over'); });
+    zone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        zone.classList.remove('over');
+        zone.classList.add('filled');
+        zone.innerHTML = '';
+        zone.appendChild(avatar);
+        avatar.style.margin = '0';
+        setHidden('avatar-uploaded', 'true');
+        updateGate();
+    });
+})();
+
+/* ----------------------------------------------------------- 4. Slider captcha */
+(function () {
+    var track   = $('track');
+    var handle  = $('handle');
+    var display = $('value-display');
+    var current = $('current-value');
+    var statusSpan = document.querySelector('#captcha-status span');
+    var target  = parseInt($('captcha-img').getAttribute('data-target'), 10);
+    var trackWidth = 500;
+
+    var dragging = false;
+    var offsetX  = 0;
+
+    handle.addEventListener('mousedown', function (e) {
+        dragging = true;
+        offsetX = e.clientX - handle.getBoundingClientRect().left;
+        e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var trackLeft = track.getBoundingClientRect().left;
+        var x = e.clientX - trackLeft - offsetX + handle.offsetWidth / 2;
+        x = Math.max(0, Math.min(trackWidth, x));
+        handle.style.left = (x - handle.offsetWidth / 2) + 'px';
+        var value = Math.round((x / trackWidth) * 100);
+        display.style.left = x + 'px';
+        display.textContent = value;
+        current.textContent = value;
+        statusSpan.textContent = value;
+        if (value === target) {
+            setHidden('captcha-ok', 'true');
+            $('captcha-status').className = 'ok';
+        } else {
+            setHidden('captcha-ok', 'false');
+            $('captcha-status').className = 'bad';
+        }
+        updateGate();
+    });
+    document.addEventListener('mouseup', function () { dragging = false; });
+})();
+
+/* ---------------------------------------------------- 5. Double click unlock */
+(function () {
+    var nick = $('nickname');
+    nick.addEventListener('dblclick', function () {
+        nick.removeAttribute('readonly');
+        nick.classList.add('unlocked');
+        nick.placeholder = 'now you can type';
+        var st = $('nickname-status');
+        st.textContent = 'status: unlocked';
+        st.classList.add('unlocked');
+        nick.focus();
+    });
+    nick.addEventListener('input', updateGate);
+})();
+
+/* ----------------------------------------------------- 6. Right click menu */
+(function () {
+    var area = $('plan-area');
+    var menu = $('ctx-menu');
+
+    area.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        menu.style.display = 'block';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top  = e.pageY + 'px';
+    });
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('#ctx-menu')) return;
+        menu.style.display = 'none';
+    });
+    menu.querySelectorAll('li').forEach(function (li) {
+        li.addEventListener('click', function () {
+            var plan = li.dataset.plan;
+            setHidden('plan', plan);
+            var badge = $('plan-badge');
+            badge.textContent = plan;
+            badge.className = 'badge bg-primary';
+            menu.style.display = 'none';
+            updateGate();
+        });
+    });
+})();
+
+/* ----------------------------------------------------- 7. Click and hold */
+(function () {
+    var btn   = $('hold-btn');
+    var fill  = $('hold-fill');
+    var label = $('hold-label');
+    var st    = $('hold-status');
+    var REQUIRED = 3000;
+    var startedAt = 0;
+    var timer = null;
+
+    function tick() {
+        var elapsed = Date.now() - startedAt;
+        var pct = Math.min(100, Math.round((elapsed / REQUIRED) * 100));
+        fill.style.width = pct + '%';
+        label.textContent = 'Hold to confirm (' + pct + '%)';
+        if (pct >= 100) {
+            stop(true);
+            setHidden('confirmed', 'true');
+            st.textContent = 'status: confirmed';
+            st.className = 'ok';
+            btn.disabled = true;
+            label.textContent = 'Confirmed ✓';
+            fill.style.background = 'rgba(25,135,84,0.6)';
+            updateGate();
+        }
+    }
+    function start() {
+        if (btn.disabled) return;
+        startedAt = Date.now();
+        timer = setInterval(tick, 50);
+    }
+    function stop(success) {
+        if (timer) { clearInterval(timer); timer = null; }
+        if (!success) {
+            fill.style.width = '0%';
+            label.textContent = 'Hold to confirm (0%)';
+        }
+    }
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup',   function () { stop(false); });
+    btn.addEventListener('mouseleave', function () { stop(false); });
+})();
+
+/* ----------------------------------------------------- 8. Sortable skills */
+(function () {
+    var list = $('skills-list');
+    var dragged = null;
+    var TARGET = ['python','selenium','sql','git','docker'];
+
+    function refreshOrder() {
+        var order = Array.from(list.querySelectorAll('.sort-item')).map(function (li) { return li.dataset.id; });
+        setHidden('skills-order', order.join(','));
+        var st = $('skills-status');
+        st.textContent = 'order: ' + order.join(', ');
+        st.className = (JSON.stringify(order) === JSON.stringify(TARGET)) ? 'text-success fw-bold' : 'text-muted';
+        // renumber visible "1." "2." etc
+        list.querySelectorAll('.sort-item').forEach(function (li, i) {
+            li.querySelector('.order').textContent = (i + 1) + '.';
+        });
+        updateGate();
+    }
+
+    list.addEventListener('dragstart', function (e) {
+        if (!e.target.classList.contains('sort-item')) return;
+        dragged = e.target;
+        e.target.classList.add('dragging');
+    });
+    list.addEventListener('dragend', function () {
+        if (dragged) dragged.classList.remove('dragging');
+        list.querySelectorAll('.drop-target').forEach(function (el) { el.classList.remove('drop-target'); });
+        dragged = null;
+        refreshOrder();
+    });
+    list.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        var target = e.target.closest('.sort-item');
+        if (!target || target === dragged) return;
+        list.querySelectorAll('.drop-target').forEach(function (el) { el.classList.remove('drop-target'); });
+        target.classList.add('drop-target');
+    });
+    list.addEventListener('drop', function (e) {
+        e.preventDefault();
+        var target = e.target.closest('.sort-item');
+        if (!target || !dragged || target === dragged) return;
+        var rect = target.getBoundingClientRect();
+        var after = (e.clientY - rect.top) > rect.height / 2;
+        if (after) target.after(dragged); else target.before(dragged);
+    });
+
+    refreshOrder();
+})();
+
+/* --------------------------------------------------------- 9. Star rating */
+(function () {
+    var stars = document.querySelectorAll('#stars .star');
+    function paint(level, cls) {
+        stars.forEach(function (s, i) { s.classList.toggle(cls, i < level); });
+    }
+    stars.forEach(function (s) {
+        s.addEventListener('mouseover', function () { paint(parseInt(s.dataset.value), 'hover'); });
+        s.addEventListener('mouseout',  function () { stars.forEach(function (x) { x.classList.remove('hover'); }); });
+        s.addEventListener('click', function () {
+            var v = parseInt(s.dataset.value);
+            paint(v, 'selected');
+            $('rating-value').textContent = v;
+            setHidden('rating', String(v));
+            updateGate();
+        });
+    });
+})();
+
+/* -------------------------------------------------- 10. Multi-select cards */
+(function () {
+    var cards = document.querySelectorAll('#interests .card-item');
+    cards.forEach(function (c) {
+        c.addEventListener('click', function (e) {
+            if (!e.ctrlKey && !e.metaKey) {
+                cards.forEach(function (x) { x.classList.remove('selected'); });
+            }
+            c.classList.toggle('selected');
+            var selected = Array.from(cards)
+                .filter(function (c) { return c.classList.contains('selected'); })
+                .map(function (c) { return c.dataset.id; });
+            $('interests-status').textContent = 'selected: ' + (selected.length ? selected.join(', ') : 'none');
+            setHidden('interests-selected', selected.join(','));
+            updateGate();
+        });
+    });
+})();
+
+/* ----------------------------------------------------- 11. Bio copy check */
+(function () {
+    function check() {
+        var a = $('bio').value.trim();
+        var b = $('bio-copy').value.trim();
+        var st = $('bio-status');
+        if (a.length > 0 && a === b) {
+            st.textContent = 'copy check: matches ✓';
+            st.className = 'text-success fw-bold';
+        } else {
+            st.textContent = 'copy check: not matching';
+            st.className = 'text-muted';
+        }
+        updateGate();
+    }
+    $('bio').addEventListener('input', check);
+    $('bio-copy').addEventListener('input', check);
+})();
+
+/* ------------------------------------------------- Keyboard: Ctrl+Enter */
+document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        if (!$('submit-btn').disabled) $('reg-form').requestSubmit();
+    }
+});
+
+/* ----------------------------------------------- Gate: enable submit btn */
+function updateGate() {
+    var checks = [
+        { ok: $('first-name').value.trim().length > 0, label: 'first name' },
+        { ok: $('last-name').value.trim().length > 0,  label: 'last name'  },
+        { ok: /\S+@\S+\.\S+/.test($('email').value),   label: 'email'      },
+        { ok: $('password').value.length >= 4,         label: 'password'   },
+        { ok: !!$('country').value,                    label: 'country/region' },
+        { ok: $('avatar-uploaded').value === 'true',   label: 'avatar dropped' },
+        { ok: $('captcha-ok').value === 'true',        label: 'captcha slider' },
+        { ok: $('nickname').value.trim().length > 0,   label: 'nickname (double-click to unlock)' },
+        { ok: !!$('plan').value,                       label: 'plan (right-click)' },
+        { ok: $('confirmed').value === 'true',         label: 'identity (click and hold)' },
+        { ok: $('skills-order').value === 'python,selenium,sql,git,docker', label: 'skills order' },
+        { ok: parseInt($('rating').value, 10) > 0,     label: 'star rating' },
+        { ok: $('interests-selected').value.split(',').filter(Boolean).length === 3, label: 'exactly 3 interests' },
+        { ok: $('bio').value.trim().length > 0 && $('bio').value.trim() === $('bio-copy').value.trim(), label: 'bio + pasted copy' }
+    ];
+    var missing = checks.filter(function (c) { return !c.ok; }).map(function (c) { return c.label; });
+    $('submit-btn').disabled = missing.length > 0;
+    $('gate-status').textContent = missing.length
+        ? 'still needed: ' + missing.join(', ')
+        : 'all checks passed — you can submit';
+    $('gate-status').className = missing.length ? 'hint mt-2 text-muted' : 'hint mt-2 text-success';
+}
+
+/* ------------------------------------------------------------- Submit */
+['first-name','last-name','email','password'].forEach(function (id) {
+    $(id).addEventListener('input', updateGate);
+});
+updateGate();
+
+$('reg-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var data = {};
+    new FormData($('reg-form')).forEach(function (v, k) { data[k] = v; });
+    $('result-json').textContent = JSON.stringify(data, null, 2);
+    $('result').style.display = 'block';
+    $('result').scrollIntoView({ behavior: 'smooth' });
+    var captchaNumber = $('captcha-img').getAttribute('data-target');
+    alert('Success registration ' + captchaNumber);
+});
+</script>
+</body>
+</html>

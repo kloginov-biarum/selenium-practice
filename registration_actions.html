@@ -36,23 +36,6 @@
         .submenu > li { padding: 8px 16px; }
         .submenu > li:hover { background: #cfe2ff; }
 
-        /* Drag & drop avatar */
-        .avatar-row { display: flex; align-items: center; gap: 24px; }
-        #avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: #0d6efd; color: #fff; display: flex;
-            align-items: center; justify-content: center;
-            font-size: 2em; font-weight: bold; cursor: grab; user-select: none;
-        }
-        #avatar:active { cursor: grabbing; }
-        #avatar-zone {
-            width: 220px; height: 110px; border: 2px dashed #adb5bd;
-            border-radius: 8px; display: flex; align-items: center;
-            justify-content: center; color: #6c757d; text-align: center;
-        }
-        #avatar-zone.over { border-color: #0d6efd; background: #e7f1ff; color: #0d6efd; }
-        #avatar-zone.filled { border-style: solid; border-color: #198754; color: #198754; }
-
         /* Slider captcha */
         #captcha-img {
             border: 1px solid #ced4da; border-radius: 4px;
@@ -249,22 +232,9 @@
             </div>
         </section>
 
-        <!-- 3. Drag & drop avatar -->
+        <!-- 3. Slider captcha (drag by offset) -->
         <section class="card">
-            <div class="card-header">3. Avatar upload <span class="text-muted small">(drag_and_drop)</span></div>
-            <div class="card-body">
-                <p class="hint">Drag the round avatar into the dashed zone.</p>
-                <div class="avatar-row">
-                    <div id="avatar" draggable="true" data-id="me">A</div>
-                    <div id="avatar-zone">Drop avatar here</div>
-                </div>
-                <input type="hidden" id="avatar-uploaded" name="avatar-uploaded" value="false">
-            </div>
-        </section>
-
-        <!-- 4. Slider captcha (drag by offset) -->
-        <section class="card">
-            <div class="card-header">4. Prove you are not a robot <span class="text-muted small">(click_and_hold + move_by_offset + release)</span></div>
+            <div class="card-header">3. Prove you are not a robot <span class="text-muted small">(click_and_hold + move_by_offset + release)</span></div>
             <div class="card-body">
                 <p class="hint">Read the target number from the picture's <code>alt</code> attribute and drag the slider so
                    that <span id="current-value">0</span> equals that number.</p>
@@ -285,9 +255,9 @@
             </div>
         </section>
 
-        <!-- 5. Double click to unlock nickname -->
+        <!-- 4. Double click to unlock nickname -->
         <section class="card">
-            <div class="card-header">5. Nickname <span class="text-muted small">(double_click)</span></div>
+            <div class="card-header">4. Nickname <span class="text-muted small">(double_click)</span></div>
             <div class="card-body">
                 <p class="hint">The field is locked. <b>Double-click</b> it to enable editing.</p>
                 <input type="text" id="nickname" name="nickname" class="form-control" placeholder="locked — double-click to edit" readonly>
@@ -295,9 +265,9 @@
             </div>
         </section>
 
-        <!-- 6. Right click for account type -->
+        <!-- 5. Right click for account type -->
         <section class="card">
-            <div class="card-header">6. Account type <span class="text-muted small">(context_click)</span></div>
+            <div class="card-header">5. Account type <span class="text-muted small">(context_click)</span></div>
             <div class="card-body">
                 <p class="hint"><b>Right-click</b> inside the box below and pick a plan from the context menu.</p>
                 <div id="plan-area">
@@ -312,9 +282,9 @@
             <li data-plan="Enterprise">Enterprise</li>
         </ul>
 
-        <!-- 7. Click and hold to confirm -->
+        <!-- 6. Click and hold to confirm -->
         <section class="card">
-            <div class="card-header">7. Confirm identity <span class="text-muted small">(click_and_hold + pause + release)</span></div>
+            <div class="card-header">6. Confirm identity <span class="text-muted small">(click_and_hold + pause + release)</span></div>
             <div class="card-body">
                 <p class="hint">Press and hold the button for <b>3 seconds</b> to confirm.</p>
                 <button type="button" id="hold-btn" class="btn btn-outline-success">
@@ -326,9 +296,9 @@
             </div>
         </section>
 
-        <!-- 8. Sortable skills -->
+        <!-- 7. Sortable skills -->
         <section class="card">
-            <div class="card-header">8. Sort your skills by priority <span class="text-muted small">(drag_and_drop between siblings)</span></div>
+            <div class="card-header">7. Sort your skills by priority <span class="text-muted small">(drag_and_drop between siblings)</span></div>
             <div class="card-body">
                 <p class="hint">Drag items so that the order from top to bottom is:
                    <b>Python → Selenium → SQL → Git → Docker</b>.</p>
@@ -344,9 +314,9 @@
             </div>
         </section>
 
-        <!-- 9. Star rating -->
+        <!-- 8. Star rating -->
         <section class="card">
-            <div class="card-header">9. Rate your Selenium experience <span class="text-muted small">(move_to_element + click)</span></div>
+            <div class="card-header">8. Rate your Selenium experience <span class="text-muted small">(move_to_element + click)</span></div>
             <div class="card-body">
                 <p class="hint">Hover over the stars to preview, click to set the rating (1–5).</p>
                 <div class="stars" id="stars">
@@ -361,9 +331,9 @@
             </div>
         </section>
 
-        <!-- 10. Multi-select interests -->
+        <!-- 9. Multi-select interests -->
         <section class="card">
-            <div class="card-header">10. Pick your interests <span class="text-muted small">(key_down(Ctrl) + click + key_up(Ctrl))</span></div>
+            <div class="card-header">9. Pick your interests <span class="text-muted small">(key_down(Ctrl) + click + key_up(Ctrl))</span></div>
             <div class="card-body">
                 <p class="hint">Click first card normally, then hold <b>Ctrl</b> (or <b>Cmd</b>) and click two more to
                    end up with <b>exactly 3 selected</b>.</p>
@@ -382,9 +352,9 @@
             </div>
         </section>
 
-        <!-- 11. Bio + keyboard shortcuts -->
+        <!-- 10. Bio + keyboard shortcuts -->
         <section class="card">
-            <div class="card-header">11. About you <span class="text-muted small">(send_keys + key_down(CONTROL))</span></div>
+            <div class="card-header">10. About you <span class="text-muted small">(send_keys + key_down(CONTROL))</span></div>
             <div class="card-body">
                 <p class="hint">Type a short bio.
                    Then click inside the field and press
@@ -438,32 +408,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     });
 });
 
-/* ------------------------------------------------------------ 3. Avatar D&D */
-(function () {
-    var avatar = $('avatar');
-    var zone   = $('avatar-zone');
-
-    avatar.addEventListener('dragstart', function (e) {
-        e.dataTransfer.setData('text/plain', 'avatar');
-    });
-    zone.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        zone.classList.add('over');
-    });
-    zone.addEventListener('dragleave', function () { zone.classList.remove('over'); });
-    zone.addEventListener('drop', function (e) {
-        e.preventDefault();
-        zone.classList.remove('over');
-        zone.classList.add('filled');
-        zone.innerHTML = '';
-        zone.appendChild(avatar);
-        avatar.style.margin = '0';
-        setHidden('avatar-uploaded', 'true');
-        updateGate();
-    });
-})();
-
-/* ----------------------------------------------------------- 4. Slider captcha */
+/* ----------------------------------------------------------- 3. Slider captcha */
 (function () {
     var track   = $('track');
     var handle  = $('handle');
@@ -504,7 +449,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     document.addEventListener('mouseup', function () { dragging = false; });
 })();
 
-/* ---------------------------------------------------- 5. Double click unlock */
+/* ---------------------------------------------------- 4. Double click unlock */
 (function () {
     var nick = $('nickname');
     nick.addEventListener('dblclick', function () {
@@ -519,7 +464,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     nick.addEventListener('input', updateGate);
 })();
 
-/* ----------------------------------------------------- 6. Right click menu */
+/* ----------------------------------------------------- 5. Right click menu */
 (function () {
     var area = $('plan-area');
     var menu = $('ctx-menu');
@@ -547,7 +492,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     });
 })();
 
-/* ----------------------------------------------------- 7. Click and hold */
+/* ----------------------------------------------------- 6. Click and hold */
 (function () {
     var btn   = $('hold-btn');
     var fill  = $('hold-fill');
@@ -590,7 +535,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     btn.addEventListener('mouseleave', function () { stop(false); });
 })();
 
-/* ----------------------------------------------------- 8. Sortable skills */
+/* ----------------------------------------------------- 7. Sortable skills */
 (function () {
     var list = $('skills-list');
     var dragged = null;
@@ -639,7 +584,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     refreshOrder();
 })();
 
-/* --------------------------------------------------------- 9. Star rating */
+/* --------------------------------------------------------- 8. Star rating */
 (function () {
     var stars = document.querySelectorAll('#stars .star');
     function paint(level, cls) {
@@ -658,7 +603,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     });
 })();
 
-/* -------------------------------------------------- 10. Multi-select cards */
+/* -------------------------------------------------- 9. Multi-select cards */
 (function () {
     var cards = document.querySelectorAll('#interests .card-item');
     cards.forEach(function (c) {
@@ -677,7 +622,7 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     });
 })();
 
-/* ----------------------------------------------------- 11. Bio copy check */
+/* ----------------------------------------------------- 10. Bio copy check */
 (function () {
     function check() {
         var a = $('bio').value.trim();
@@ -711,7 +656,6 @@ function updateGate() {
         { ok: /\S+@\S+\.\S+/.test($('email').value),   label: 'email'      },
         { ok: $('password').value.length >= 4,         label: 'password'   },
         { ok: !!$('country').value,                    label: 'country/region' },
-        { ok: $('avatar-uploaded').value === 'true',   label: 'avatar dropped' },
         { ok: $('captcha-ok').value === 'true',        label: 'captcha slider' },
         { ok: $('nickname').value.trim().length > 0,   label: 'nickname (double-click to unlock)' },
         { ok: !!$('plan').value,                       label: 'plan (right-click)' },

@@ -270,7 +270,7 @@
                    that <span id="current-value">0</span> equals that number.</p>
 
                 <img id="captcha-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='60'><rect width='100%' height='100%' fill='%23fff8e1'/><text x='50%' y='55%' text-anchor='middle' font-family='monospace' font-size='28' fill='%23b8860b'>captcha</text></svg>"
-                     alt="42" data-target="42" width="160" height="60">
+                     alt="" width="160" height="60">
 
                 <div id="track">
                     <div id="value-display">0</div>
@@ -416,6 +416,14 @@
 function $(id) { return document.getElementById(id); }
 function setHidden(id, v) { $(id).value = v; }
 function flag(id) { return $(id).value === 'true' || (id === 'rating' && parseInt($(id).value, 10) > 0); }
+
+/* ------------------------------------------------ randomize captcha target */
+(function () {
+    var n = Math.floor(Math.random() * 81) + 10; // 10..90
+    var img = $('captcha-img');
+    img.setAttribute('alt', String(n));
+    img.setAttribute('data-target', String(n));
+})();
 
 /* ------------------------------------------------------------ 2. Hover menu */
 document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {

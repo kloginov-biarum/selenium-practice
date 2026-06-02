@@ -57,8 +57,12 @@
             transform: translateX(-50%); font-weight: bold; color: #0d6efd;
         }
         .scale {
-            width: 500px; display: flex; justify-content: space-between;
+            position: relative;
+            width: 500px; height: 1.2em;
             color: #6c757d; font-size: 0.85em;
+        }
+        .scale span {
+            position: absolute; transform: translateX(-50%);
         }
         .mark {
             position: absolute; top: -4px;
@@ -263,7 +267,11 @@
                     <div id="handle"></div>
                 </div>
                 <div class="scale">
-                    <span>10</span><span>30</span><span>50</span><span>70</span><span>90</span>
+                    <span style="left: 50px;">10</span>
+                    <span style="left: 150px;">30</span>
+                    <span style="left: 250px;">50</span>
+                    <span style="left: 350px;">70</span>
+                    <span style="left: 450px;">90</span>
                 </div>
 
                 <div id="captcha-status">Slider value: <span>0</span></div>

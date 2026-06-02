@@ -432,7 +432,6 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     var track   = $('track');
     var handle  = $('handle');
     var display = $('value-display');
-    var current = $('current-value');
     var statusSpan = document.querySelector('#captcha-status span');
     var target  = parseInt($('captcha-img').getAttribute('data-target'), 10);
     var trackWidth = 500;
@@ -454,7 +453,6 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
         var value = Math.round((x / trackWidth) * 100);
         display.style.left = x + 'px';
         display.textContent = value;
-        current.textContent = value;
         statusSpan.textContent = value;
         if (value === target) {
             setHidden('captcha-ok', 'true');

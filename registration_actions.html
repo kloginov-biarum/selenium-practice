@@ -60,6 +60,16 @@
             width: 500px; display: flex; justify-content: space-between;
             color: #6c757d; font-size: 0.85em;
         }
+        .mark {
+            position: absolute; top: -4px;
+            width: 16px; height: 16px; margin-left: -8px;
+            background: #fff; border: 2px solid #adb5bd;
+            border-radius: 50%; box-sizing: border-box;
+        }
+        .mark.target {
+            border-color: #198754; background: #d1e7dd;
+            box-shadow: 0 0 0 4px rgba(25,135,84,0.15);
+        }
         #captcha-status { margin-top: 12px; }
         #captcha-status.ok { color: #198754; font-weight: bold; }
         #captcha-status.bad { color: #dc3545; }
@@ -236,18 +246,24 @@
         <section class="card">
             <div class="card-header">3. Prove you are not a robot <span class="text-muted small">(click_and_hold + move_by_offset + release)</span></div>
             <div class="card-body">
-                <p class="hint">Read the target number from the picture's <code>alt</code> attribute and drag the slider so
-                   that <span id="current-value">0</span> equals that number.</p>
+                <p class="hint">Read the target number from the picture's <code>alt</code> attribute. The track has
+                   <b>5 marks</b> with ids <code>mark-10</code>, <code>mark-30</code>, <code>mark-50</code>,
+                   <code>mark-70</code>, <code>mark-90</code> — drag the handle to the matching mark.</p>
 
                 <img id="captcha-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='60'><rect width='100%' height='100%' fill='%23fff8e1'/><text x='50%' y='55%' text-anchor='middle' font-family='monospace' font-size='28' fill='%23b8860b'>captcha</text></svg>"
                      alt="" width="160" height="60">
 
                 <div id="track">
                     <div id="value-display">0</div>
+                    <div class="mark" id="mark-10" data-value="10" style="left: 50px;"></div>
+                    <div class="mark" id="mark-30" data-value="30" style="left: 150px;"></div>
+                    <div class="mark" id="mark-50" data-value="50" style="left: 250px;"></div>
+                    <div class="mark" id="mark-70" data-value="70" style="left: 350px;"></div>
+                    <div class="mark" id="mark-90" data-value="90" style="left: 450px;"></div>
                     <div id="handle"></div>
                 </div>
                 <div class="scale">
-                    <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+                    <span>10</span><span>30</span><span>50</span><span>70</span><span>90</span>
                 </div>
 
                 <div id="captcha-status">Slider value: <span>0</span></div>
@@ -389,10 +405,13 @@ function flag(id) { return $(id).value === 'true' || (id === 'rating' && parseIn
 
 /* ------------------------------------------------ randomize captcha target */
 (function () {
-    var n = Math.floor(Math.random() * 81) + 10; // 10..90
+    var marks = [10, 30, 50, 70, 90];
+    var n = marks[Math.floor(Math.random() * marks.length)];
     var img = $('captcha-img');
     img.setAttribute('alt', String(n));
     img.setAttribute('data-target', String(n));
+    var target = document.getElementById('mark-' + n);
+    if (target) target.classList.add('target');
 })();
 
 /* ------------------------------------------------------------ 2. Hover menu */

@@ -96,7 +96,10 @@
 
         grid.innerHTML = list.map(m => `
             <div class="movie-card" data-test-id="movie-card" data-movie-id="${m.id}" onclick="window.location.href='movie.html?id=${m.id}'">
-                <div class="movie-poster">${m.poster}</div>
+                <div class="movie-poster" data-test-id="movie-poster">
+                    ${m.posterCode}
+                    <img src="${m.posterUrl}" alt="${m.title} poster" loading="lazy" onerror="this.remove()">
+                </div>
                 <div class="movie-info">
                     <div class="movie-title" data-test-id="movie-title">${m.title}</div>
                     <div class="movie-meta">

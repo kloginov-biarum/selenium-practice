@@ -1,3 +1,5 @@
+const TMDB_BASE = "https://image.tmdb.org/t/p/w500";
+
 const MOVIES = [
     {
         id: 1,
@@ -10,7 +12,8 @@ const MOVIES = [
         ageRating: "PG-13",
         description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
         price: 12,
-        poster: "INC"
+        posterCode: "INC",
+        posterUrl: TMDB_BASE + "/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
     },
     {
         id: 2,
@@ -23,7 +26,8 @@ const MOVIES = [
         ageRating: "PG-13",
         description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests.",
         price: 11,
-        poster: "TDK"
+        posterCode: "TDK",
+        posterUrl: TMDB_BASE + "/qJ2tW6WMUDux911r6m7haRef0WH.jpg"
     },
     {
         id: 3,
@@ -36,7 +40,8 @@ const MOVIES = [
         ageRating: "PG-13",
         description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
         price: 13,
-        poster: "INT"
+        posterCode: "INT",
+        posterUrl: TMDB_BASE + "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
     },
     {
         id: 4,
@@ -49,7 +54,8 @@ const MOVIES = [
         ageRating: "R",
         description: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
         price: 10,
-        poster: "PF"
+        posterCode: "PF",
+        posterUrl: TMDB_BASE + "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg"
     },
     {
         id: 5,
@@ -62,7 +68,8 @@ const MOVIES = [
         ageRating: "R",
         description: "A computer hacker learns about the true nature of reality and his role in the war against its controllers.",
         price: 11,
-        poster: "MTX"
+        posterCode: "MTX",
+        posterUrl: TMDB_BASE + "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
     },
     {
         id: 6,
@@ -75,7 +82,8 @@ const MOVIES = [
         ageRating: "PG-13",
         description: "The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate and other history unfold from the perspective of an Alabama man.",
         price: 10,
-        poster: "FG"
+        posterCode: "FG",
+        posterUrl: TMDB_BASE + "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg"
     },
     {
         id: 7,
@@ -88,7 +96,8 @@ const MOVIES = [
         ageRating: "R",
         description: "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
         price: 12,
-        poster: "PAR"
+        posterCode: "PAR",
+        posterUrl: TMDB_BASE + "/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg"
     },
     {
         id: 8,
@@ -101,7 +110,8 @@ const MOVIES = [
         ageRating: "R",
         description: "A writer encounters the owner of an aging high-class hotel, who tells him of his early years serving as a lobby boy in the hotel's glorious years.",
         price: 9,
-        poster: "GBH"
+        posterCode: "GBH",
+        posterUrl: TMDB_BASE + "/eWdyYQreja6JGCzqHWXpWHDrrPo.jpg"
     },
     {
         id: 9,
@@ -114,7 +124,8 @@ const MOVIES = [
         ageRating: "PG",
         description: "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits.",
         price: 9,
-        poster: "SA"
+        posterCode: "SA",
+        posterUrl: TMDB_BASE + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"
     },
     {
         id: 10,
@@ -127,7 +138,8 @@ const MOVIES = [
         ageRating: "PG-13",
         description: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
         price: 14,
-        poster: "DN2"
+        posterCode: "DN2",
+        posterUrl: TMDB_BASE + "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg"
     },
     {
         id: 11,
@@ -140,7 +152,8 @@ const MOVIES = [
         ageRating: "R",
         description: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
         price: 13,
-        poster: "OPP"
+        posterCode: "OPP",
+        posterUrl: TMDB_BASE + "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
     },
     {
         id: 12,
@@ -153,7 +166,8 @@ const MOVIES = [
         ageRating: "R",
         description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
         price: 10,
-        poster: "SR"
+        posterCode: "SR",
+        posterUrl: TMDB_BASE + "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg"
     }
 ];
 

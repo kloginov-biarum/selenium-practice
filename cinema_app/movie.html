@@ -55,7 +55,8 @@
         document.getElementById('movie-not-found').classList.remove('hidden');
     } else {
         document.title = `CineBook - ${movie.title}`;
-        document.getElementById('movie-poster').textContent = movie.poster;
+        const posterEl = document.getElementById('movie-poster');
+        posterEl.innerHTML = `${movie.posterCode}<img src="${movie.posterUrl}" alt="${movie.title} poster" onerror="this.remove()">`;
         document.getElementById('movie-title').textContent = movie.title;
         document.getElementById('movie-genre').textContent = movie.genre;
         document.getElementById('movie-year').textContent = movie.year;

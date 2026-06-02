@@ -172,25 +172,25 @@
 
     <form id="reg-form" autocomplete="off">
 
-        <!-- 1. Plain text fields -->
-        <section class="card">
-            <div class="card-header">1. Basic info <span class="text-muted small">(send_keys)</span></div>
+        <!-- 1. Plain text fields  —  NO id/name attributes: locate by label or position -->
+        <section class="card" data-section="basic-info">
+            <div class="card-header">1. Basic info <span class="text-muted small">(send_keys — locators are non-obvious)</span></div>
             <div class="card-body row g-3">
                 <div class="col-md-6">
                     <label class="form-label">First name *</label>
-                    <input type="text" id="first-name" name="first-name" class="form-control" maxlength="32" required>
+                    <input type="text" class="form-control" maxlength="32" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Last name *</label>
-                    <input type="text" id="last-name" name="last-name" class="form-control" maxlength="32" required>
+                    <input type="text" class="form-control" maxlength="32" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Email *</label>
-                    <input type="email" id="email" name="email" class="form-control" required>
+                    <input type="email" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Password *</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <input type="password" class="form-control" required>
                 </div>
             </div>
         </section>
@@ -338,17 +338,18 @@
             </div>
         </section>
 
-        <!-- 8. Star rating -->
+        <!-- 8. Star rating  —  NO data-value: locate the right star by position (nth-child / index) -->
         <section class="card">
-            <div class="card-header">8. Rate your Selenium experience <span class="text-muted small">(move_to_element + click)</span></div>
+            <div class="card-header">8. Rate your Selenium experience <span class="text-muted small">(move_to_element + click — non-obvious locators)</span></div>
             <div class="card-body">
-                <p class="hint">Hover over the stars to preview, click to set the rating (1–5).</p>
+                <p class="hint">Hover over the stars to preview, click to set the rating (1–5).
+                   Stars have <b>no <code>id</code> or <code>data-value</code></b> — locate the n-th one yourself.</p>
                 <div class="stars" id="stars">
-                    <span class="star" data-value="1">★</span>
-                    <span class="star" data-value="2">★</span>
-                    <span class="star" data-value="3">★</span>
-                    <span class="star" data-value="4">★</span>
-                    <span class="star" data-value="5">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
                 </div>
                 <div>Selected rating: <span id="rating-value">0</span> / 5</div>
                 <input type="hidden" id="rating" name="rating" value="0">
@@ -615,11 +616,11 @@ document.querySelectorAll('#country-menu .submenu > li').forEach(function (li) {
     function paint(level, cls) {
         stars.forEach(function (s, i) { s.classList.toggle(cls, i < level); });
     }
-    stars.forEach(function (s) {
-        s.addEventListener('mouseover', function () { paint(parseInt(s.dataset.value), 'hover'); });
+    stars.forEach(function (s, idx) {
+        var v = idx + 1;
+        s.addEventListener('mouseover', function () { paint(v, 'hover'); });
         s.addEventListener('mouseout',  function () { stars.forEach(function (x) { x.classList.remove('hover'); }); });
         s.addEventListener('click', function () {
-            var v = parseInt(s.dataset.value);
             paint(v, 'selected');
             $('rating-value').textContent = v;
             setHidden('rating', String(v));
@@ -673,13 +674,20 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+/* --------------------- Basic info inputs have no id — locate by position */
+var basicInputs = document.querySelectorAll('[data-section="basic-info"] input');
+var firstNameInput = basicInputs[0];
+var lastNameInput  = basicInputs[1];
+var emailInput     = basicInputs[2];
+var passwordInput  = basicInputs[3];
+
 /* ----------------------------------------------- Gate: enable submit btn */
 function updateGate() {
     var checks = [
-        { ok: $('first-name').value.trim().length > 0, label: 'first name' },
-        { ok: $('last-name').value.trim().length > 0,  label: 'last name'  },
-        { ok: /\S+@\S+\.\S+/.test($('email').value),   label: 'email'      },
-        { ok: $('password').value.length >= 4,         label: 'password'   },
+        { ok: firstNameInput.value.trim().length > 0, label: 'first name' },
+        { ok: lastNameInput.value.trim().length > 0,  label: 'last name'  },
+        { ok: /\S+@\S+\.\S+/.test(emailInput.value),  label: 'email'      },
+        { ok: passwordInput.value.length >= 4,        label: 'password'   },
         { ok: !!$('country').value,                    label: 'country/region' },
         { ok: $('captcha-ok').value === 'true',        label: 'captcha slider' },
         { ok: $('nickname').value.trim().length > 0,   label: 'nickname (double-click to unlock)' },
@@ -699,9 +707,7 @@ function updateGate() {
 }
 
 /* ------------------------------------------------------------- Submit */
-['first-name','last-name','email','password'].forEach(function (id) {
-    $(id).addEventListener('input', updateGate);
-});
+basicInputs.forEach(function (el) { el.addEventListener('input', updateGate); });
 updateGate();
 
 $('reg-form').addEventListener('submit', function (e) {

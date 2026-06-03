@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cats Gallery — Selenium Practice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 30px; background: #fafafa; }
+        .container { max-width: 1000px; }
+        h1 { margin-bottom: 4px; }
+        .lead { color: #6c757d; }
+
+        .filter-row {
+            display: flex; gap: 12px; align-items: center;
+            margin: 24px 0 16px 0;
+        }
+        .filter-row input { max-width: 280px; }
+
+        #shortlist-zone {
+            border: 2px dashed #adb5bd; border-radius: 8px;
+            padding: 16px 20px; min-height: 64px;
+            background: #fff; margin-bottom: 28px;
+        }
+        #shortlist-zone.over { border-color: #0d6efd; background: #e7f1ff; }
+        #shortlist-items {
+            display: flex; gap: 10px; flex-wrap: wrap;
+            color: #6c757d; font-style: italic;
+        }
+        .shortlist-tag {
+            background: #0d6efd; color: #fff;
+            padding: 4px 12px; border-radius: 12px;
+            font-style: normal; font-weight: 500;
+        }
+        .shortlist-tag .remove {
+            margin-left: 8px; cursor: pointer; opacity: 0.7;
+        }
+
+        .cat-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .cat-card {
+            background: #fff; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative; cursor: grab; user-select: none;
+        }
+        .cat-card:active { cursor: grabbing; }
+        .cat-card img {
+            width: 100%; height: 220px; object-fit: cover;
+            display: block; background: #e9ecef;
+        }
+        .cat-info {
+            padding: 10px 14px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .cat-name { font-weight: 600; }
+        .like-btn {
+            border: none; background: transparent; cursor: pointer;
+            font-size: 1.4em; color: #adb5bd; padding: 0 4px;
+        }
+        .like-btn.liked { color: #dc3545; }
+        .like-count {
+            display: inline-block; min-width: 18px; text-align: center;
+            color: #6c757d; font-variant-numeric: tabular-nums;
+        }
+        .badge-fav {
+            position: absolute; top: 8px; left: 8px;
+            background: #ffc107; color: #fff;
+            padding: 3px 8px; border-radius: 4px;
+            font-weight: bold; font-size: 0.85em;
+            display: none;
+        }
+        .cat-card.favorite .badge-fav { display: block; }
+
+        .hint {
+            background: #fff8e1; border-left: 4px solid #ffc107;
+            padding: 10px 14px; border-radius: 4px;
+            color: #856404; font-size: 0.9em; margin-bottom: 20px;
+        }
+        .kbd { background: #f1f3f5; border: 1px solid #ced4da; border-radius: 3px; padding: 1px 6px; font-family: monospace; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cats Gallery</h1>
+    <p class="lead">A page full of cats for Selenium practice — likes, favorites, drag-to-shortlist, search.</p>
+
+    <div class="hint">
+        <b>Interactions to practice:</b>
+        <ul class="mb-0">
+            <li>Click the ♥ button to like a cat (toggles, updates <code>.like-count</code>).</li>
+            <li><b>Double-click</b> a cat image to mark it as favorite (yellow badge appears).</li>
+            <li><b>Drag</b> a cat card into the shortlist zone below to add it (no duplicates).</li>
+            <li>Type in the search field — cards with non-matching names get <code>display: none</code>.</li>
+        </ul>
+    </div>
+
+    <div class="filter-row">
+        <input id="search" class="form-control" placeholder="Search by cat name…">
+        <span id="visible-count" class="text-muted small">9 of 9 visible</span>
+        <button type="button" id="reset" class="btn btn-sm btn-outline-secondary">Reset all</button>
+    </div>
+
+    <h5>Shortlist <small class="text-muted">(drag cat cards here)</small></h5>
+    <div id="shortlist-zone">
+        <div id="shortlist-items" data-empty="true">empty — drop cat cards here</div>
+    </div>
+
+    <h5>Gallery</h5>
+    <div class="cat-grid" id="gallery"></div>
+</div>
+
+<script>
+var CATS = [
+    { id: 'lenin',    name: 'Lenin' },
+    { id: 'bullet',   name: 'Bullet' },
+    { id: 'mochi',    name: 'Mochi' },
+    { id: 'pixel',    name: 'Pixel' },
+    { id: 'whisker',  name: 'Whisker' },
+    { id: 'pancake',  name: 'Pancake' },
+    { id: 'noodle',   name: 'Noodle' },
+    { id: 'pepper',   name: 'Pepper' },
+    { id: 'biscuit',  name: 'Biscuit' }
+];
+
+/* ----------------------------------------------------- Build the gallery */
+var gallery = document.getElementById('gallery');
+CATS.forEach(function (cat) {
+    var card = document.createElement('div');
+    card.className = 'cat-card';
+    card.dataset.id = cat.id;
+    card.id = 'cat-' + cat.id;
+    card.draggable = true;
+    card.innerHTML =
+        '<span class="badge-fav">★ favorite</span>' +
+        '<img src="https://cataas.com/cat/says/' + encodeURIComponent(cat.name) +
+            '?width=300&height=220&fontSize=40&fontColor=white" ' +
+            'alt="' + cat.name + '" data-cat-id="' + cat.id + '" loading="lazy">' +
+        '<div class="cat-info">' +
+            '<span class="cat-name">' + cat.name + '</span>' +
+            '<div>' +
+                '<span class="like-count" data-likes="0">0</span> ' +
+                '<button class="like-btn" type="button" aria-label="like">♥</button>' +
+            '</div>' +
+        '</div>';
+    gallery.appendChild(card);
+});
+
+/* ----------------------------------------------------- Like buttons */
+document.querySelectorAll('.like-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        btn.classList.toggle('liked');
+        var counter = btn.parentElement.querySelector('.like-count');
+        var n = parseInt(counter.dataset.likes, 10);
+        n = btn.classList.contains('liked') ? n + 1 : Math.max(0, n - 1);
+        counter.dataset.likes = String(n);
+        counter.textContent = n;
+    });
+});
+
+/* ----------------------------------------------------- Double-click to favorite */
+document.querySelectorAll('.cat-card img').forEach(function (img) {
+    img.addEventListener('dblclick', function () {
+        img.closest('.cat-card').classList.toggle('favorite');
+    });
+});
+
+/* ----------------------------------------------------- Drag to shortlist */
+var shortlistZone  = document.getElementById('shortlist-zone');
+var shortlistItems = document.getElementById('shortlist-items');
+var added = {};
+
+document.querySelectorAll('.cat-card').forEach(function (card) {
+    card.addEventListener('dragstart', function (e) {
+        e.dataTransfer.setData('text/plain', card.dataset.id);
+    });
+});
+
+shortlistZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    shortlistZone.classList.add('over');
+});
+shortlistZone.addEventListener('dragleave', function () { shortlistZone.classList.remove('over'); });
+shortlistZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    shortlistZone.classList.remove('over');
+    var id = e.dataTransfer.getData('text/plain');
+    if (!id || added[id]) return;
+    added[id] = true;
+    if (shortlistItems.dataset.empty === 'true') {
+        shortlistItems.innerHTML = '';
+        shortlistItems.dataset.empty = 'false';
+    }
+    var cat = CATS.find(function (c) { return c.id === id; });
+    var tag = document.createElement('span');
+    tag.className  = 'shortlist-tag';
+    tag.dataset.id = id;
+    tag.innerHTML  = cat.name + '<span class="remove" data-action="remove">×</span>';
+    shortlistItems.appendChild(tag);
+});
+
+shortlistItems.addEventListener('click', function (e) {
+    if (e.target.dataset.action !== 'remove') return;
+    var tag = e.target.closest('.shortlist-tag');
+    delete added[tag.dataset.id];
+    tag.remove();
+    if (!shortlistItems.children.length) {
+        shortlistItems.dataset.empty = 'true';
+        shortlistItems.textContent = 'empty — drop cat cards here';
+    }
+});
+
+/* ----------------------------------------------------- Search filter */
+var search = document.getElementById('search');
+var visibleCount = document.getElementById('visible-count');
+
+function applyFilter() {
+    var q = search.value.toLowerCase().trim();
+    var visible = 0;
+    document.querySelectorAll('.cat-card').forEach(function (card) {
+        var name = card.querySelector('.cat-name').textContent.toLowerCase();
+        var show = !q || name.indexOf(q) !== -1;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+    });
+    visibleCount.textContent = visible + ' of ' + CATS.length + ' visible';
+}
+search.addEventListener('input', applyFilter);
+
+/* ----------------------------------------------------- Reset all */
+document.getElementById('reset').addEventListener('click', function () {
+    document.querySelectorAll('.like-btn').forEach(function (b) { b.classList.remove('liked'); });
+    document.querySelectorAll('.like-count').forEach(function (c) {
+        c.dataset.likes = '0';
+        c.textContent = '0';
+    });
+    document.querySelectorAll('.cat-card').forEach(function (c) { c.classList.remove('favorite'); });
+    added = {};
+    shortlistItems.innerHTML = 'empty — drop cat cards here';
+    shortlistItems.dataset.empty = 'true';
+    search.value = '';
+    applyFilter();
+});
+</script>
+</body>
+</html>

@@ -31,9 +31,15 @@
 
 <script>
     function openAllTabs() {
-        window.open('tab1.html', '_blank');
-        window.open('tab2.html', '_blank');
-        window.open('tab3.html', '_blank');
+        ['tab1.html', 'tab2.html', 'tab3.html'].forEach(function (href) {
+            var a = document.createElement('a');
+            a.href = href;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        });
     }
 
     function checkAnswer() {
